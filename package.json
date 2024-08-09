@@ -1,0 +1,20 @@
+{
+  "name": "hot-app-web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@babel/parser": "^7.25.3",
+    "@babel/traverse": "^7.25.3",
+    "monaco-jsx-highlighter": "^2.77.77"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.20.6"
+  }
+}
