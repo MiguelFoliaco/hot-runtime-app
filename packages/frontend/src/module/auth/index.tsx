@@ -1,14 +1,26 @@
-import { Google } from "@mui/icons-material"
+import { GitHub } from "@mui/icons-material"
 import { Alert, Button, CircularProgress, Divider, Grid, Snackbar, TextField, Typography } from "@mui/material"
 import { supabaseClient } from "../../data/supabase"
 import { useState } from "react"
 import { useUser } from "./context/user.context"
-import { useNavigate } from "react-router-dom"
+import { redirect, useNavigate } from "react-router-dom"
+import logo from '../../assets/ICON.svg'
 
 async function signUpNewUser({ email, password }: { email: string, password: string }) {
     const { data, error } = await supabaseClient.auth.signInWithPassword({
         email,
         password,
+    })
+
+    return { data, error }
+}
+
+async function loginWithGithub() {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+            //  redirectTo: 'https://zsfrrxykerwymjkaiasp.supabase.co/auth/v1/callback'
+        }
     })
 
     return { data, error }
@@ -41,6 +53,21 @@ export const AuthPage = () => {
         console.log("Data mi perro", data)
     }
 
+    const loginGithub = async () => {
+        setLoading(true)
+        const data = await loginWithGithub()
+        if (data.error) {
+            setErrorMsg({
+                msg: `${data.error.code || 'Error'} : ${data.error.message}`,
+                show: true
+            })
+        }
+        if (data.data.url) {
+            return redirect(data.data.url)
+        }
+        console.log(data)
+        setLoading(false)
+    }
 
     return (
         <Grid sx={{
@@ -49,6 +76,13 @@ export const AuthPage = () => {
             alignItems: 'center',
             height: '100vh'
         }}>
+
+            <Grid className="fondo-animado" sx={{ position: 'absolute', bottom: 0, left: 0, width: '50px', height: '50px', bgcolor: 'secondary.main', display: 'flex', borderRadius: 0, alignItems: 'center', justifyContent: 'center', p: '3px', pb: 0, borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
+                {/* <Grid sx={{ p: 0, bgcolor: 'background.default', padding: 1, borderRadius: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}> */}
+                <img src={logo} height={'100%'} style={{ objectFit: 'contain', }} />
+                {/* </Grid> */}
+            </Grid>
+
             <Grid
                 className="fondo-animado"
                 sx={{
@@ -56,8 +90,10 @@ export const AuthPage = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     bgcolor: 'secondary.main',
-                    borderRadius: 1
+                    borderRadius: 1,
+                    position: 'relative'
                 }}>
+
                 <Grid sx={{ borderRadius: 1, width: '395px', height: '395px', bgcolor: 'background.default', p: 2 }}>
 
                     <Typography
@@ -82,9 +118,11 @@ export const AuthPage = () => {
                     <Divider sx={{ my: 2 }}>
                         <Typography variant="body1" >o</Typography>
                     </Divider>
-                    <Button variant="outlined" color="secondary" sx={{ width: '200px', margin: 'auto', display: 'flex' }} endIcon={
-                        <Google />
-                    } >Sign In </Button>
+                    <Button
+                        onClick={loginGithub}
+                        variant="outlined" color="secondary" sx={{ width: '200px', margin: 'auto', display: 'flex' }} endIcon={
+                            <GitHub />
+                        } >Sign In </Button>
                 </Grid>
             </Grid>
             <Snackbar open={errorMsg.show} autoHideDuration={5000}>
