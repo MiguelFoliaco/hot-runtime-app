@@ -10,6 +10,7 @@ import { supabaseClient } from "../data/supabase";
 import { AuthPage } from "./auth";
 import { useUser } from "./auth/context/user.context";
 import { Home } from "./home";
+import { Workspace } from "./builder/workspace";
 
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
@@ -74,6 +75,12 @@ export const route = createBrowserRouter([
         >
             <Builder />
         </LayoutBuilder>
+    },
+    {
+        path: '/workspace',
+        element: <SessionValidation>
+            <Workspace />
+        </SessionValidation>
     },
     {
         path: '/home',

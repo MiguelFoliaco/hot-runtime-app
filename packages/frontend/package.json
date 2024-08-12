@@ -21,6 +21,7 @@
     "@supabase/supabase-js": "^2.45.1",
     "@xyflow/react": "^12.0.4",
     "axios": "^1.7.3",
+    "moment": "^2.30.1",
     "monaco-editor": "^0.50.0",
     "monaco-jsx-highlighter": "^2.77.77",
     "react": "^18.3.1",

@@ -16,6 +16,19 @@
   transition: 200ms ease-in-out;
 }
 
+.left-radius-none .MuiInputBase-root {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.rotation {
+  animation-name: rotation_loader;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transition: 200ms ease-in-out;
+}
+
 @keyframes fondo-animado {
   0% {
     background-color: #003b1d;
@@ -27,5 +40,25 @@
 
   100% {
     background-color: #00361b;
+  }
+}
+
+@keyframes rotation_loader {
+  0% {
+    transform: rotate(0deg);
+    color: #82FFC1;
+  }
+
+  55% {
+    color: #828fff;
+  }
+  
+  75% {
+    color: #D941FF;
+  }
+  
+  100% {
+    transform: rotate(-360deg);
+    color: #41b9ff;
   }
 }
