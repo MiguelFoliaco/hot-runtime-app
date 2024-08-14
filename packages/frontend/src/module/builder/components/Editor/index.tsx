@@ -7,7 +7,7 @@ import "ace-builds/src-noconflict/ext-language_tools";
 import { Tables } from "../../../../database.types";
 import { useEffect, useState } from "react";
 import { useProject } from "../../../../utils/hooks/useProjects";
-import { Close, Public } from "@mui/icons-material";
+import { Adjust, Close, Public } from "@mui/icons-material";
 import { supabaseClient } from "../../../../data/supabase";
 import { useUser } from "../../../auth/context/user.context";
 import { useComponents } from "../../../../utils/hooks/useComponent";
@@ -28,8 +28,9 @@ const ComponentName=()=>{
     name: '',
     owner: '',
     projectHostory: '',
-    projectId: 0,
-    public: false
+    projectid: 0,
+    public: false,
+    main_component: false
 }
 export const EditorJSX = () => {
     const project = useProject(state => state.projectSelected!)
@@ -71,19 +72,29 @@ export const EditorJSX = () => {
             //@ts-ignore
             const saveProcess = await supabaseClient.from('components').insert({
                 //...component,
-                projectId: project.id,
+                projectid: project.id,
                 codeJSX: component.codeJSX,
                 name: component.name,
                 owner: user.email,
                 projectHostory: project.name,
                 code: '',
+                main_component: component.main_component ? true : null
             }, { count: "exact" })
             if (saveProcess.error) {
-                setMsgInfo({
-                    msg: saveProcess.error.message,
-                    severity: 'error',
-                    show: true
-                })
+                if (saveProcess.error.message.includes('duplicate key value violates unique constrain')) {
+                    setMsgInfo({
+                        msg: "Existe otro componente marcado como punto de entrada, por favor deseleccionelo y vuelva a intentarlo",
+                        severity: 'error',
+                        show: true
+                    })
+                }
+                else {
+                    setMsgInfo({
+                        msg: saveProcess.error.message,
+                        severity: 'error',
+                        show: true
+                    })
+                }
             } else {
                 setMsgInfo({
                     msg: "Se creo el componente correctamente",
@@ -97,19 +108,31 @@ export const EditorJSX = () => {
             //@ts-ignore
             const saveProcess = await supabaseClient.from('components').update({
                 //...component,
-                projectId: project.id,
+                projectid: project.id,
                 codeJSX: component?.codeJSX,
                 name: component?.name,
                 owner: user.email,
                 projectHostory: project.name,
                 code: '',
+                main_component: component.main_component ? true : null
             },).eq('id', component?.id)
+
+            console.log(component.main_component === false ? null : true)
             if (saveProcess.error) {
-                setMsgInfo({
-                    msg: saveProcess.error.message,
-                    severity: 'error',
-                    show: true
-                })
+                if (saveProcess.error.message.includes('duplicate key value violates unique constrain')) {
+                    setMsgInfo({
+                        msg: "Existe otro componente marcado como punto de entrada, por favor deseleccionelo y vuelva a intentarlo",
+                        severity: 'error',
+                        show: true
+                    })
+                } else {
+
+                    setMsgInfo({
+                        msg: saveProcess.error.message,
+                        severity: 'error',
+                        show: true
+                    })
+                }
             } else {
                 setMsgInfo({
                     msg: "Se actualizo el componente correctamente",
@@ -119,7 +142,7 @@ export const EditorJSX = () => {
             }
         }
 
-        const data = await supabaseClient.from('components').select().eq('projectId', project.id)
+        const data = await supabaseClient.from('components').select().eq('projectid', project.id)
         if (data.data) {
             setComponents(data.data)
         }
@@ -163,27 +186,47 @@ export const EditorJSX = () => {
                     }} />
                 </Grid>
                 <Grid item xs={12} p={1}>
-                    <TextField size='small' disabled label='Projecto Padre' value={project.name} aria-readonly />
+                    <TextField size='small' disabled label='Projecto Padre' focused value={project.name} aria-readonly />
                 </Grid>
-                <Grid item xs={12} p={0}>
-                    <FormControlLabel
-                        labelPlacement="start"
-                        control={
-                            <Checkbox
-                                disabled={loadingComponent}
-                                sx={{ ml: 2 }}
-                                icon={<Public />}
-                                checkedIcon={<Public color="secondary" />}
-                                onChange={() => {
-                                    if (component) {
-                                        _setComponent({ ...component, public: !component.public })
-                                    }
-                                }}
-                                checked={component?.public}
-                            />
-                        }
-                        label="Publico?" />
-
+                <Grid item container xs={12} p={0}>
+                    <Grid item xs={12}>
+                        <FormControlLabel
+                            labelPlacement="start"
+                            control={
+                                <Checkbox
+                                    disabled={loadingComponent}
+                                    sx={{ ml: 2 }}
+                                    icon={<Public />}
+                                    checkedIcon={<Public color="secondary" />}
+                                    onChange={() => {
+                                        if (component) {
+                                            _setComponent({ ...component, public: !component.public })
+                                        }
+                                    }}
+                                    checked={component?.public}
+                                />
+                            }
+                            label="Publico?" />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControlLabel
+                            labelPlacement="start"
+                            control={
+                                <Checkbox
+                                    disabled={loadingComponent}
+                                    sx={{ ml: 2 }}
+                                    icon={<Adjust />}
+                                    checkedIcon={<Adjust color="secondary" />}
+                                    onChange={() => {
+                                        if (component) {
+                                            _setComponent({ ...component, main_component: !component.main_component })
+                                        }
+                                    }}
+                                    checked={component?.main_component || false}
+                                />
+                            }
+                            label="Punto de entrada" />
+                    </Grid>
                     {/* <TextField size='small' disabled label='Projecto Padre' value={project.name} aria-readonly /> */}
                 </Grid>
                 <Grid item xs={12} p={1}>

@@ -67,10 +67,11 @@ export type Database = {
           componentsChildren: number | null
           created_at: string
           id: number
+          main_component: boolean | null
           name: string
           owner: string
           projectHostory: string | null
-          projectId: number
+          projectid: number | null
           public: boolean
         }
         Insert: {
@@ -82,10 +83,11 @@ export type Database = {
           componentsChildren?: number | null
           created_at?: string
           id?: number
+          main_component?: boolean | null
           name: string
           owner: string
           projectHostory?: string | null
-          projectId: number
+          projectid?: number | null
           public?: boolean
         }
         Update: {
@@ -97,16 +99,17 @@ export type Database = {
           componentsChildren?: number | null
           created_at?: string
           id?: number
+          main_component?: boolean | null
           name?: string
           owner?: string
           projectHostory?: string | null
-          projectId?: number
+          projectid?: number | null
           public?: boolean
         }
         Relationships: [
           {
-            foreignKeyName: "components_projectId_fkey"
-            columns: ["projectId"]
+            foreignKeyName: "fk_project_id"
+            columns: ["projectid"]
             isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]

@@ -7,11 +7,12 @@ import { supabaseClient } from "../../../data/supabase"
 import { isEqual } from "lodash"
 import { Flows } from "./Flows"
 import { EditorJSX } from "./Editor"
+import { PhoneAndroid } from "@mui/icons-material"
 
 
 let render = 0;
 const getComponent = async (setComponents: (data: Tables<'components'>[]) => void, projectId: number) => {
-    const request = await supabaseClient.from('components').select().eq("projectId", projectId);
+    const request = await supabaseClient.from('components').select().eq("projectid", projectId);
     console.log("Request --->", request)
     if (request.data) {
         setComponents(request.data)
@@ -63,13 +64,19 @@ export const StudioWithOutMemo = () => {
                                             }}
                                             sx={{
                                                 transition: '200ms',
+                                                display: 'flex',
                                                 cursor: 'pointer',
+                                                alignItems:'center',
+                                                gap:1,
                                                 ':hover': {
                                                     pl: 1
                                                 }
                                             }}
                                         >
                                             <Typography variant="overline" color={e.id === componentSelected?.id ? 'primary.main' : 'white'} key={`code-item-${e.id}`}>{e.name}</Typography>
+                                            {
+                                                e.main_component == true && <PhoneAndroid color='success' fontSize="small" />
+                                            }
                                         </Grid>
                                     ))
                                 }
