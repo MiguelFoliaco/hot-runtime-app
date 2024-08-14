@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { Tables } from "../../database.types"
 import { supabaseClient } from "../../data/supabase"
 import { Close } from "@mui/icons-material"
+import { Studio } from "./components/Studio"
 
 
 
@@ -32,7 +33,7 @@ const getProjects = async (setProject: (data: Tables<'projects'>) => void, setEr
 export const Workspace = () => {
 
     const { projectSelected, setProject } = useProject(state => state);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [showError, setShowError] = useState({ msg: '', show: false })
     const href = new URLSearchParams(location.search)
 
@@ -57,7 +58,10 @@ export const Workspace = () => {
                     :
                     <Grid container height='100%'>
                         <Grid item xs={12}>
-                            <Typography></Typography>
+                            {
+                                projectSelected &&
+                                <Studio />
+                            }
                         </Grid>
                     </Grid>
             }
