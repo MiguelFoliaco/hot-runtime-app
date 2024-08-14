@@ -24,38 +24,15 @@ export const CreateProject = () => {
         setLoading(true)
         try {
             if (user?.email) {
-                const _user = await supabaseClient.from('users').select().eq('username', user.email);
-                console.log(_user.data)
-                if (_user?.data && _user?.data?.length > 0) {
-                    const project = await supabaseClient.from('projects').insert({
-                        name,
-                        user_owner: _user.data[0].id,
-                        description,
-                    })
-                    if (project.data) {
-                        alert('Se creo el projecto, redirigiendo...')
-                    }
-                } else {
-                    const userDB = await supabaseClient.from('users').insert({
-                        username: user?.email,
-                        role_id: 1,
-                    })
-                    if (userDB.error != null) {
-                        console.log("Error en crear un usuario")
-                        return;
-                    }
-                    const _userSelect = await supabaseClient.from('users').select().eq('username', user.email);
-                    if (_userSelect.data !== null) {
-                        const project = await supabaseClient.from('projects').insert({
-                            name,
-                            user_owner: _userSelect.data[0].id,
-                            description,
-                        })
-                        if (project.data) {
-                            alert('Se creo el projecto, redirigiendo...')
-                        }
-                    }
+                const project = await supabaseClient.from('projects').insert({
+                    name,
+                    publicateBy: user.id,
+                    description,
+                })
+                if (project.data) {
+                    alert('Se creo el projecto, redirigiendo...')
                 }
+
             }
         }
         catch (err) {

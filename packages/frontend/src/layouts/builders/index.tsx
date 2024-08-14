@@ -7,7 +7,7 @@ import { ArrowForward } from '@mui/icons-material'
 
 export const LayoutBuilder = ({ children, listItemsLeft: ListLeft }: { children: ReactNode, listItemsLeft: (props: { open: boolean, toggle: () => void }) => ReactNode }) => {
     const user = useUser(state => state.values.user)
-    const { setSession, setUser } = useUser(state => state.actions)
+    const { setSession } = useUser(state => state.actions)
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
     const open = Boolean(anchorEl)
     const [openMenuLeft, setOpenMenuLeft] = useState(false)
@@ -22,7 +22,6 @@ export const LayoutBuilder = ({ children, listItemsLeft: ListLeft }: { children:
 
     const closeSession = async () => {
         const process = await supabaseClient.auth.signOut({ scope: 'global' });
-        setUser(undefined)
         setSession(undefined)
         console.log(process)
         handleClose()

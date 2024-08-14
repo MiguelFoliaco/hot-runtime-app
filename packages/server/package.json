@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "gn-types": "npx supabase gen types --lang=typescript --project-id \"zsfrrxykerwymjkaiasp\" --schema public > src/database.types.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,9 +17,11 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "esbuild": "^0.23.0",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "server": "file:"
   }
 }

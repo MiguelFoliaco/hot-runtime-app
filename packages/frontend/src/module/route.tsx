@@ -15,15 +15,15 @@ import { Workspace } from "./builder/workspace";
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
     const [session, setSession] = useState<Session | null>(null)
-    const { actions: { setSession: _setSession, setUser } } = useUser()
+    const { actions: { setSession: _setSession } } = useUser()
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         setLoading(true)
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             setSession(session)
             if (session) {
+                console.log('session', session)
                 _setSession(session)
-                setUser(session.user)
             }
         }).finally(() => {
             setLoading(false)
@@ -35,7 +35,6 @@ export const SessionValidation = ({ children, loginPage }: { children: ReactNode
             setSession(session)
             if (session) {
                 _setSession(session)
-                setUser(session.user)
 
                 setLoading(false)
             }

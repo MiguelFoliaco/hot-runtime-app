@@ -3,7 +3,6 @@ import { create } from 'zustand'
 
 type IUseHook = {
     actions: {
-        setUser: (user?: User) => void;
         setSession: (session?: Session) => void;
     },
     values: {
@@ -14,8 +13,7 @@ type IUseHook = {
 
 export const useUser = create<IUseHook>(set => ({
     actions: {
-        setSession: (data) => set({ values: { session: data } }),
-        setUser: (data) => set({ values: { user: data } }),
+        setSession: (data) => set({ values: { user: data?.user, session: data } })
     },
     values: {}
 }))

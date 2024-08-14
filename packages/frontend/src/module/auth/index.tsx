@@ -30,7 +30,6 @@ export const AuthPage = () => {
 
     const [user, setUser] = useState({ email: '', password: '' })
     const setSession = useUser(state => state.actions.setSession)
-    const _setUser = useUser(state => state.actions.setUser)
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState({ show: false, msg: '' })
@@ -40,7 +39,6 @@ export const AuthPage = () => {
         const data = await signUpNewUser(user)
         if (data.data.session && data.data.user) {
             setSession(data.data.session)
-            _setUser(data.data.user)
             navigate('/home')
         }
         if (data.error) {

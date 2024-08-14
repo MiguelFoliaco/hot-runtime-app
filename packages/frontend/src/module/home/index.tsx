@@ -8,9 +8,12 @@ import { useEffect, useState } from "react"
 import { getProjects, getTags } from "./services/projects"
 import { CreateProject } from "./components/CreateProject"
 import { useTags } from "../../utils/hooks/useTags"
+import { useVersion } from "../../utils/hooks/useVersion"
+import { getOS } from "./services/version"
 
 export const Home = () => {
     const user = useUser(state => state.values.user)
+    const { oss, setOSs } = useVersion(state => state)
     const [isLoading, setIsLoading] = useState(false)
     const { projects, setProjects } = useProject(state => state)
     const { setTags, tags } = useTags(state => state)
@@ -29,6 +32,9 @@ export const Home = () => {
                 .finally(() => {
                     setIsLoading(false)
                 })
+        }
+        if (oss.length === 0) {
+            getOS(setOSs)
         }
     }, [])
     return (

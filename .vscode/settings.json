@@ -2,5 +2,10 @@
     "conventionalCommits.scopes": [
         "Auth",
         "Editor"
-    ]
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#0E323B",
+        "titleBar.activeBackground": "#144552",
+        "titleBar.activeForeground": "#F5FBFD"
+    }
 }

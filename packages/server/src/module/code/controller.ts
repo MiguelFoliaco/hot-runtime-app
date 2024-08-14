@@ -1,20 +1,43 @@
 import esbuild from 'esbuild'
 import { IHandler } from "../../types";
 import { app, template } from './data/App';
+import { CodeServices } from './services';
+import { Tables } from '../../database.types';
 
 export class CodeController {
+    constructor(private server: CodeServices) { }
 
-    getCode: IHandler = async (req, res) => {
-
-        const codebuild = await esbuild.transform(app, {
-            jsx: 'transform',
-            loader: 'tsx',
-        })
-
-        res.header({
-            'Content-Type': 'application/javascript'
-        })
-
-        return res.send(template(codebuild.code))
+    generateVersion: IHandler = async (req, res) => {
+        const versionCode = req.body as Tables<'version-code'>
+        const data = await this.server.generateVersion(versionCode)
+        return res.json(data)
     }
+
+    getVersionByProjectId: IHandler = async (req, res) => {
+        const { projectId } = req.query
+        if (!projectId) return res.json({ error: { message: 'No se ha proporcionado un projecto para generar la version' }, data: null })
+        const data = await this.server.getVersionByProject(parseInt(projectId as string))
+        if (data.error) {
+            return res.send(data.error.message)
+        }
+        res.setHeader('Content-Type', 'application/javascript')
+        if (data.data[0]) {
+            return res.send(template(data.data[0].code_build))
+        }
+        return res.send(template(app))
+    }
+
+    // getCode: IHandler = async (req, res) => {
+    //     const { projectId } = req.query
+    //     if (!projectId) return res.json({ error: { message: 'No se ha proporcionado un projecto para generar la version' }, data: null })
+    //     const data = await this.server.generateVersion(parseInt(projectId as string))
+    //     if (data.error) {
+    //         return res.send(data.error.message)
+    //     }
+    //     res.setHeader('x-code-legalComments', data.data.legalComments || '')
+    //     res.setHeader('x-code-mangleCache', JSON.stringify(data.data.mangleCache) || '{}')
+    //     res.setHeader('x-code-warnings', JSON.stringify(data.data.warnings) || '{}')
+    //     res.setHeader('Content-Type', 'application/javascript')
+    //     return res.send(template(data.data.code))
+    // }
 }
