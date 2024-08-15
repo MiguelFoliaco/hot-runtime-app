@@ -17,6 +17,7 @@ export class CodeServices {
             const codebuild = await esbuild.transform(codesUnion, {
                 jsx: 'transform',
                 loader: 'tsx',
+                minify: true
             });
             const requestInsert = await this.client.from('version-code').insert({
                 os_id: version.os_id,

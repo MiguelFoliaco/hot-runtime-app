@@ -4,13 +4,16 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
+import "ace-builds/src-noconflict/ext-code_lens";
 import { Tables } from "../../../../database.types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProject } from "../../../../utils/hooks/useProjects";
 import { Adjust, Close, Public } from "@mui/icons-material";
 import { supabaseClient } from "../../../../data/supabase";
 import { useUser } from "../../../auth/context/user.context";
 import { useComponents } from "../../../../utils/hooks/useComponent";
+import ReactAce from "react-ace/lib/ace";
+import { Ace } from "ace-builds";
 
 const initialComponent: Tables<'components'> = {
     code: '',
@@ -33,19 +36,51 @@ const ComponentName=()=>{
     main_component: false
 }
 export const EditorJSX = () => {
+    const ref = useRef<ReactAce>(null)
     const project = useProject(state => state.projectSelected!)
     const user = useUser(state => state.values.user!)
-    const { setComponents, componentSelected: component, setComponent: _setComponent, } = useComponents(state => state!)
+    const { setComponents, components, componentSelected: component, setComponent: _setComponent, } = useComponents(state => state!)
     //const [component, _setComponent] = useState<Tables<'components'>>(componentSelected || initialComponent)
     const [msgInfo, setMsgInfo] = useState({ msg: '', show: false, severity: 'success' })
     const [loadingComponent, setLoadingComponent] = useState(false);
+    const [contextMenuVisible, setContextMenuVisible] = useState(false);
+    const [editor_, setEditor_] = useState<Ace.Editor>()
+    const [pos, setpos] = useState({ x: 0, y: 0 })
 
+    const handleContextMenu = (editor: Ace.Editor) => {
+        setContextMenuVisible(true);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        setpos({ x: editor.$mouseHandler.x, y: editor.$mouseHandler.y, })
+        setEditor_(editor)
+    };
+
+
+    const handleEditorClick = () => {
+        setContextMenuVisible(false);
+    };
 
     useEffect(() => {
         if (!component) {
             _setComponent(initialComponent)
         }
     }, [])
+
+
+    const selectItem = async (data: Tables<'components'>) => {
+        const index = data.codeJSX.indexOf('const')
+        const index2 = data.codeJSX.indexOf('=', 2)
+        const componentStr = `<${data.codeJSX.substring(index + 6, index2)}/>`
+        if (editor_) {
+            const selecction = editor_.getSelection()
+            editor_.session.replace(selecction.getRange(), componentStr)
+            console.log(pos,)
+        }
+        //editor_?.replaceAll(`<${data.codeJSX.substring(index + 6, index2)}/>`)
+
+
+    }
+
 
     function onChange(newValue: string) {
         if (component) {
@@ -149,31 +184,64 @@ export const EditorJSX = () => {
         setLoadingComponent(false)
     }
 
+
+
+
     return (
-        <Grid sx={{ height: '350px', pl: 2, display: 'flex', gap: 2 }}>
-            <AceEditor
-                value={component?.codeJSX}
-                style={{
-                    height: '100%',
-                    width: '100%',
-                    maxWidth: '750px',
-                    borderRadius: '8px'
-                }}
-                readOnly={loadingComponent}
-                mode="javascript"
-                theme="monokai"
-                enableSnippets
-                onChange={onChange}
-                name="UNIQUE_ID_OF_DIV"
-                editorProps={{ $blockScrolling: true, }}
-                setOptions={{
-                    enableBasicAutocompletion: false,
-                    enableLiveAutocompletion: false,
-                    enableSnippets: true,
-                    showLineNumbers: true,
-                    tabSize: 2,
-                }}
-            />
+        <Grid
+            onClick={handleEditorClick}
+            sx={{ height: '350px', pl: 2, display: 'flex', gap: 2 }}>
+            <Grid sx={{ height: '350px', width: '100%', position: 'relative' }}>
+                <AceEditor
+                    ref={ref}
+                    enableBasicAutocompletion
+                    enableLiveAutocompletion
+                    highlightActiveLine
+                    showGutter
+                    commands={[
+                        {
+                            bindKey: {
+                                mac: 'Ctrl-Space',
+                                win: 'Ctrl-Space'
+                            },
+                            name: 'searchComponent',
+                            readOnly: true,
+                            exec(editor) {
+                                console.log(editor)
+                                handleContextMenu(editor)
+                            },
+                        }
+                    ]}
+                    value={component?.codeJSX}
+                    style={{
+                        height: '100%',
+                        width: '100%',
+                        maxWidth: '750px',
+                        borderRadius: '8px'
+                    }}
+                    readOnly={loadingComponent}
+                    mode="javascript"
+                    theme="monokai"
+                    enableSnippets
+                    onChange={onChange}
+                    name="UNIQUE_ID_OF_DIV"
+                    editorProps={{ $blockScrolling: true, }}
+                    setOptions={{
+                        enableBasicAutocompletion: false,
+                        enableLiveAutocompletion: false,
+                        enableSnippets: true,
+                        showLineNumbers: true,
+                        tabSize: 2,
+                    }}
+                />
+                {contextMenuVisible && (
+                    <ContextMenu
+                        options={components}
+                        onOptionClick={selectItem}
+                        pos={pos}
+                    />
+                )}
+            </Grid>
             <Grid container sx={{ width: '300px', height: '350px', bgcolor: '#1f1f1f', borderRadius: 2, }} alignItems={'self-start'}>
                 <Grid item xs={12} p={1}>
                     <Typography variant='overline'>Configuracion adicional</Typography>
@@ -247,3 +315,46 @@ export const EditorJSX = () => {
         </Grid>
     )
 }
+
+
+
+const ContextMenu = ({ options, onOptionClick, pos }: { pos: { x: number, y: number }, options: Tables<'components'>[], onOptionClick: (data?: Tables<'components'>) => void }) => {
+    return (
+        <Grid
+            style={{
+                position: 'fixed',
+                top: pos.y,
+                left: pos.x,
+                width: '200px',
+                border: '1px solid #FFFFFF10',
+                listStyleType: 'none',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                borderRadius: '4px',
+                zIndex: 1000,
+                backgroundColor:'#1f1f1f',
+            }}
+        >
+            {options.map((option, index) => (
+                <Grid
+                    key={index}
+                    style={{
+                        padding: '3px 6px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        borderTop:'1px solid #FFFFFF10'
+                    }}
+                    sx={{
+                        ':hover': {
+                            bgcolor: '#111'
+                        }
+                    }}
+                    onClick={() => onOptionClick(option)}
+                >
+                    <Typography variant="caption">{option.name}</Typography>
+                    <Typography variant="caption" color='#FFFFFF40'>component</Typography>
+                </Grid>
+            ))}
+        </Grid>
+    );
+};
