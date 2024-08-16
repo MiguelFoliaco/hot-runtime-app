@@ -12,7 +12,7 @@ import {
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { ComponentNode } from './Component';
 
 const initialNodes = [
@@ -27,16 +27,19 @@ const initialEdges = [
 
 export const Flows = () => {
 
-    const [nodes, _, onNodesChange] = useNodesState(initialNodes)
+    const [nodes, setAllNodesChange, onNodesChange] = useNodesState(initialNodes)
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
     const nodeTypes = useMemo(() => ({ componentNode: ComponentNode }), [])
 
     const onConnect = useCallback(
         (params: Connection) => {
-            setEdges(eds => addEdge(params, eds))
+            setEdges(eds => addEdge(params, eds));
         }, [setEdges])
 
+    useEffect(() => {
+        setAllNodesChange(initialNodes)
+    }, [])
     return (
         <Grid sx={{ width: '100%', height: '350px', bgcolor: '#1f1f1f', borderRadius: 2 }}>
             <ReactFlow
@@ -49,7 +52,7 @@ export const Flows = () => {
                 nodeTypes={nodeTypes}
             >
                 <Controls />
-                <MiniMap  nodeColor={'#D941FF50'}  />
+                <MiniMap nodeColor={'#D941FF50'} />
                 <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
 
             </ReactFlow>

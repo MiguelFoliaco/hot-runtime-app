@@ -318,7 +318,7 @@ export const EditorJSX = () => {
 
 
 
-const ContextMenu = ({ options, onOptionClick, pos }: { pos: { x: number, y: number }, options: Tables<'components'>[], onOptionClick: (data?: Tables<'components'>) => void }) => {
+const ContextMenu = ({ options, onOptionClick, pos }: { pos: { x: number, y: number }, options: Tables<'components'>[], onOptionClick: (data: Tables<'components'>) => Promise<void> }) => {
     return (
         <Grid
             style={{
@@ -331,7 +331,7 @@ const ContextMenu = ({ options, onOptionClick, pos }: { pos: { x: number, y: num
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                 borderRadius: '4px',
                 zIndex: 1000,
-                backgroundColor:'#1f1f1f',
+                backgroundColor: '#1f1f1f',
             }}
         >
             {options.map((option, index) => (
@@ -342,7 +342,7 @@ const ContextMenu = ({ options, onOptionClick, pos }: { pos: { x: number, y: num
                         cursor: 'pointer',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        borderTop:'1px solid #FFFFFF10'
+                        borderTop: '1px solid #FFFFFF10'
                     }}
                     sx={{
                         ':hover': {

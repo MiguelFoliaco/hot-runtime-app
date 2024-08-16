@@ -1,4 +1,4 @@
-import { Alert, CircularProgress, Grid, IconButton, Snackbar, Typography } from "@mui/material"
+import { Alert, CircularProgress, Grid, IconButton, Snackbar } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { useProject } from "../../utils/hooks/useProjects"

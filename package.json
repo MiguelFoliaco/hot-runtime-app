@@ -10,13 +10,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@babel/parser": "^7.25.3",
-    "@babel/traverse": "^7.25.3",
-    "hot-app-web": "file:",
-    "monaco-jsx-highlighter": "^2.77.77"
+    "hot-app-web": "file:"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.20.6",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2"
   }

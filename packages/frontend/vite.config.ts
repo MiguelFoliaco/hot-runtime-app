@@ -9,5 +9,5 @@ export default defineConfig({
     'process': process,
     'Buffer': Buffer,
     'Buffer.isBuffer': Buffer.isBuffer
-  }
+  },
 })
