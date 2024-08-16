@@ -16,8 +16,8 @@ jobs:
               with:
                 node-version: '14'
             - name: Navegate path frontend and Install depends
-              run: cd packages/frontend && npm install
+              run: cd packages/frontend && npm install --no-audit --no-found 
             - name: Run lint
-              run: ls && npm run lint
+              run: cd packages/frontend && npm run lint
 
 
