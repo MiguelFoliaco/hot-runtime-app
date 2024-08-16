@@ -2,7 +2,8 @@
     "conventionalCommits.scopes": [
         "Auth",
         "Editor",
-        "Workflows"
+        "Workflows",
+        "Build"
     ],
     "workbench.colorCustomizations": {
         "activityBar.background": "#0E323B",
