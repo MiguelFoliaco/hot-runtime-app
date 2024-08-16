@@ -1,1 +1,0 @@
-[![Deployment Pipeline](https://github.com/MiguelFoliaco/hot-runtime-app/actions/workflows/pipeline.yml/badge.svg)](https://github.com/MiguelFoliaco/hot-runtime-app/actions/workflows/pipeline.yml)
