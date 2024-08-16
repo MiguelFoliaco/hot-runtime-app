@@ -1,9 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { Builder } from "./builder";
 import { NoTransferRounded } from "@mui/icons-material";
 import { CircularProgress, Grid, Typography } from "@mui/material";
-import { LayoutBuilder } from "../layouts/builders";
-import { ListComponents } from "./builder/components/ListComponents";
 import { Session } from "@supabase/supabase-js";
 import { ReactNode, useEffect, useState } from "react";
 import { supabaseClient } from "../data/supabase";
@@ -68,14 +65,6 @@ export const route = createBrowserRouter([
         element: <SessionValidation loginPage>
             <AuthPage />
         </SessionValidation>
-    },
-    {
-        path: '/builder',
-        element: <LayoutBuilder
-            listItemsLeft={ListComponents}
-        >
-            <Builder />
-        </LayoutBuilder>
     },
     {
         path: '/workspace',
