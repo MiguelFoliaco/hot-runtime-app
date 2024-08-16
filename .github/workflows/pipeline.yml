@@ -16,12 +16,12 @@ jobs:
               with:
                 node-version: '20.x'
             - name: Navegate path frontend and Install depends
-              run: cd packages/frontend && npm install --no-audit --no-found 
+              run: cd ${{frontend}} && npm install --no-audit --no-found 
             - name: Run lint
-              run: cd packages/frontend && npm run lint
+              run: cd ${{frontend}} && npm run lint
             - name: Run Test
-              run: cd packages/frontend && npm run test
-            - name: Run lint
-              run: cd packages/frontend && npm run build
+              run: cd ${{frontend}} && npm run test
+            - name: Run Build
+              run: cd ${{frontend}} && npm run build
 
 
