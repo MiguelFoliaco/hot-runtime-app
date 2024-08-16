@@ -1,27 +1,26 @@
 name: Deployment Pipeline
 
 on:
-    push:
-        branches:
-            - Main
-        
+  push:
+    branches:
+      - Main
+env:
+  FRONTEND: packages/frontend
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                fetch-depth: 0
-            - uses: actions/setup-node@v4
-              with:
-                node-version: '20.x'
-            - name: Navegate path frontend and Install depends
-              run: cd $frontend && npm install --no-audit --no-found 
-            - name: Run lint
-              run: cd $frontend && npm run lint
-            - name: Run Test
-              run: cd $frontend && npm run test
-            - name: Run Build
-              run: cd $frontend && npm run build
-
-
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+      - name: Navegate path frontend and Install depends
+        run: cd $FRONTEND && npm install --no-audit --no-found
+      - name: Run lint
+        run: cd $FRONTEND && npm run lint
+      - name: Run Test
+        run: cd $FRONTEND && npm run test
+      - name: Run Build
+        run: cd $FRONTEND && npm run build
