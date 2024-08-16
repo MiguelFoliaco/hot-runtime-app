@@ -19,5 +19,9 @@ jobs:
               run: cd packages/frontend && npm install --no-audit --no-found 
             - name: Run lint
               run: cd packages/frontend && npm run lint
+            - name: Run Test
+              run: cd packages/frontend && npm run test
+            - name: Run lint
+              run: cd packages/frontend && npm run build
 
 
