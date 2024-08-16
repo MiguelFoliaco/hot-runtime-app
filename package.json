@@ -15,6 +15,7 @@
     "monaco-jsx-highlighter": "^2.77.77"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.20.6"
+    "@types/babel__traverse": "^7.20.6",
+    "vitest": "^2.0.5"
   }
 }

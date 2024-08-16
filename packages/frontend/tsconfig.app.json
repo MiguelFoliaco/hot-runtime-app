@@ -21,9 +21,21 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@utils": [
+        "./src/utils/*"
+      ],
+      "@/src": [
+        "./src/*"
+      ]
+    },
+    "types": ["vitest/globals"]
   },
   "include": [
     "src"
+, "utils"  ],
+  "exclude": [
+    "test"
   ]
 }

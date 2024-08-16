@@ -1,0 +1,23 @@
+name: Deployment Pipeline
+
+on:
+    push:
+        branches:
+            - Main
+        
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
+            - uses: actions/setup-node@v4
+              with:
+                node-version: '14'
+            - name: Navegate path frontend and Install depends
+              run: cd packages/frontend && npm install
+            - name: Run lint
+              run: npm run lint
+              
+

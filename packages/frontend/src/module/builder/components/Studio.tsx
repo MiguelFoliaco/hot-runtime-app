@@ -1,7 +1,7 @@
 import { Button, FormControlLabel, Grid, Checkbox, MenuItem, Modal, Select, Skeleton, TextField, Typography } from "@mui/material"
 import { useProject } from "../../../utils/hooks/useProjects"
 import { useComponents } from "../../../utils/hooks/useComponent"
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { Tables } from "../../../database.types"
 import { supabaseClient } from "../../../data/supabase"
 import { isEqual } from "lodash"

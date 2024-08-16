@@ -65,7 +65,9 @@ export const SessionValidation = ({ children, loginPage }: { children: ReactNode
 export const route = createBrowserRouter([
     {
         path: '/',
-        element: <SessionValidation loginPage children={<AuthPage />} />
+        element: <SessionValidation loginPage>
+            <AuthPage />
+        </SessionValidation>
     },
     {
         path: '/builder',
