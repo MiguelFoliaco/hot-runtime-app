@@ -8,6 +8,7 @@ import { AuthPage } from "./auth";
 import { useUser } from "./auth/context/user.context";
 import { Home } from "./home";
 import { Workspace } from "./builder/workspace";
+import { Versions } from "./builder/versions";
 
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
@@ -70,6 +71,12 @@ export const route = createBrowserRouter([
         path: '/workspace',
         element: <SessionValidation>
             <Workspace />
+        </SessionValidation>
+    },
+    {
+        path: '/workspace/versions',
+        element: <SessionValidation>
+            <Versions />
         </SessionValidation>
     },
     {

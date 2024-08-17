@@ -1,9 +1,22 @@
 import '@fontsource/open-sans'
 import './App.css'
 import { ModuleEntry } from './module'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { Alert, Snackbar } from '@mui/material'
+import { useAlert } from './layouts/components/AlertGlobal'
 
 function App() {
-  return <ModuleEntry />
+
+  const state = useAlert()
+  return <LocalizationProvider
+    dateAdapter={AdapterMoment}
+  >
+    <ModuleEntry />
+    <Snackbar open={state.show} autoHideDuration={state.autoHidden || 5000} onClose={state.close}>
+      <Alert severity={state.severity}>{state.msg}</Alert>
+    </Snackbar>
+  </LocalizationProvider>
 }
 
 export default App

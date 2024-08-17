@@ -1,4 +1,4 @@
-import { PostgrestSingleResponse, SupabaseClient } from "@supabase/supabase-js";
+import { PostgrestError, PostgrestSingleResponse, SupabaseClient } from "@supabase/supabase-js";
 import esbuild from 'esbuild';
 import { Database, Tables } from "../../database.types";
 
@@ -32,13 +32,14 @@ export class CodeServices {
             return requestInsert
         }
         catch (err) {
+            type err = { msg: string }
             return {
                 count: 0,
                 data: null,
-                error: null,
+                error: String(err),
                 status: 200,
-                statusText: String(err)
-            } as PostgrestSingleResponse<null>
+                statusText: "Error en compilación"
+            }
         }
     }
     getVersionByProject = async (projectId: number) => {

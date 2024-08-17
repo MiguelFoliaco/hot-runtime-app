@@ -3,7 +3,8 @@
         "Auth",
         "Editor",
         "Workflows",
-        "Build"
+        "Build",
+        "Version"
     ],
     "workbench.colorCustomizations": {
         "activityBar.background": "#0E323B",

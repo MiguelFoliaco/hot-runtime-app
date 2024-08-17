@@ -74,7 +74,9 @@ export class RequestTools {
             if (response.statusText !== 'ok') {
                 this.error = response.statusText;
             }
-            return response.data;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            return response.data as T;
         } catch (err) {
             this.error = err;
             return null;
