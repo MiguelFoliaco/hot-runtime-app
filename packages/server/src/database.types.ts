@@ -234,6 +234,7 @@ export type Database = {
           id: number
           name: string
           os_id: number
+          programing_date: string | null
           projectid: number
           publicateBy: string
         }
@@ -246,6 +247,7 @@ export type Database = {
           id?: number
           name: string
           os_id: number
+          programing_date?: string | null
           projectid: number
           publicateBy?: string
         }
@@ -258,6 +260,7 @@ export type Database = {
           id?: number
           name?: string
           os_id?: number
+          programing_date?: string | null
           projectid?: number
           publicateBy?: string
         }

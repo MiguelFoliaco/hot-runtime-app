@@ -42,7 +42,7 @@ export class CodeServices {
         }
     }
     getVersionByProject = async (projectId: number) => {
-        return await this.client.from('version-code').select().eq('projectid', projectId).limit(1).order('created_at', {
+        return await this.client.from('version-code').select().eq('projectid', projectId).eq('available_production', true).limit(1).order('programing_date', {
             ascending: false
         })
     }

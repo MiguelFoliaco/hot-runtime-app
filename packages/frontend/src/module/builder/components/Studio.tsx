@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, Grid, Checkbox, MenuItem, Modal, Select, Skeleton, TextField, Typography } from "@mui/material"
+import { Button, FormControlLabel, Grid, Checkbox, MenuItem, Modal, Select, Skeleton, TextField, Typography, FormLabel } from "@mui/material"
 import { useProject } from "../../../utils/hooks/useProjects"
 import { useComponents } from "../../../utils/hooks/useComponent"
 import { memo, useEffect, useState } from "react"
@@ -7,12 +7,13 @@ import { supabaseClient } from "../../../data/supabase"
 import { isEqual } from "lodash"
 import { Flows } from "./Flows"
 import { EditorJSX } from "./Editor"
-import { PhoneAndroid } from "@mui/icons-material"
+import { DateRange, PhoneAndroid } from "@mui/icons-material"
 import { useVersion } from "../../../utils/hooks/useVersion"
 import { useUser } from "../../auth/context/user.context"
 import { getOS } from "../../home/services/version"
 import { api } from "../services/http"
 import { PostgrestResponse } from "@supabase/supabase-js"
+import moment from "moment"
 
 
 let render = 0;
@@ -44,6 +45,7 @@ export const StudioWithOutMemo = () => {
         code_build: '',
         code_jsx: '',
         created_at: new Date().toISOString(),
+        programing_date: new Date().toISOString(),
         os_id: 0,
         projectid: project.id,
         publicateBy: user.id,
@@ -89,7 +91,6 @@ export const StudioWithOutMemo = () => {
                     Authorization: `Bearer ${session.access_token}`
                 }
             });
-            console.log(versionRequest, "Version response")
             setOpenModalVersion(false)
             setVersion({
                 available_production: false,
@@ -97,6 +98,7 @@ export const StudioWithOutMemo = () => {
                 code_build: '',
                 code_jsx: '',
                 created_at: new Date().toISOString(),
+                programing_date: new Date().toISOString(),
                 os_id: 0,
                 projectid: project.id,
                 publicateBy: user.id,
@@ -121,7 +123,7 @@ export const StudioWithOutMemo = () => {
                     alignItems: 'center'
                 }}
             >
-                <Grid container sx={{ width: '45vw', height: '40vh', bgcolor: '#1f1f1f', p: 1 }}>
+                <Grid container sx={{ width: '45vw', height: 'min-content', py: 2, bgcolor: '#1f1f1f', p: 1 }}>
                     <Grid item xs={12}>
                         <Typography>Generar una nueva versión</Typography>
                     </Grid>
@@ -146,6 +148,19 @@ export const StudioWithOutMemo = () => {
                                 ))
                             }
                         </Select>
+                    </Grid>
+                    <Grid item xs={12} sx={{ my: 2 }}>
+                        <FormLabel>Fecha y Hora de programación</FormLabel>
+                        <TextField
+                            fullWidth
+                            InputProps={{
+                                endAdornment: <DateRange />
+                            }}
+                            size='small'
+                            type="datetime-local"
+                            value={moment(version.programing_date).toString()}
+                            onChange={(e) => setVersion({ ...version, programing_date: e.target.value })}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <FormControlLabel
