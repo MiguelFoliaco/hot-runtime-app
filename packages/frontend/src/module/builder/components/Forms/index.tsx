@@ -20,7 +20,6 @@ export const Form = () => {
         const str = componentSelected.codeJSX;
         const reg = /\/\*@json-form[\s\S]*?\*\//g
         const match = str.match(reg);
-        console.log(match, "Match")
         if (!match) return;
         const text = match[0]
         if (text !== null) {
