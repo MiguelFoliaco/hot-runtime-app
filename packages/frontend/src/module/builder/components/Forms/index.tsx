@@ -1,5 +1,5 @@
 import { Button, Grid, useTheme } from "@mui/material"
-import { useEffect, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { useComponents } from "../../../../utils/hooks/useComponent"
 import { InterfaceSchema, TypeData, Form as F, useForm } from "schema-interface-generator"
 import { TypeView } from "schema-interface-generator/src/types/schema"
@@ -47,7 +47,7 @@ export const Form = () => {
 
     }, [componentSelected])
 
-    const onSubmit = async (e: any) => {
+    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         if (!componentSelected) return;
         if (!formSchema) return;
         const data = form(e, formSchema)
