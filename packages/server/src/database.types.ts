@@ -72,6 +72,7 @@ export type Database = {
           owner: string
           projectHostory: string | null
           projectid: number | null
+          props: string
           public: boolean
         }
         Insert: {
@@ -88,6 +89,7 @@ export type Database = {
           owner: string
           projectHostory?: string | null
           projectid?: number | null
+          props?: string
           public?: boolean
         }
         Update: {
@@ -104,6 +106,7 @@ export type Database = {
           owner?: string
           projectHostory?: string | null
           projectid?: number | null
+          props?: string
           public?: boolean
         }
         Relationships: [
@@ -236,6 +239,7 @@ export type Database = {
           os_id: number
           programing_date: string | null
           projectid: number
+          publicate_by_email: string | null
           publicateBy: string
         }
         Insert: {
@@ -249,6 +253,7 @@ export type Database = {
           os_id: number
           programing_date?: string | null
           projectid: number
+          publicate_by_email?: string | null
           publicateBy?: string
         }
         Update: {
@@ -262,6 +267,7 @@ export type Database = {
           os_id?: number
           programing_date?: string | null
           projectid?: number
+          publicate_by_email?: string | null
           publicateBy?: string
         }
         Relationships: [

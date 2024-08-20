@@ -7,12 +7,14 @@ import { Tables } from "../../database.types"
 import { supabaseClient } from "../../data/supabase"
 import { Close } from "@mui/icons-material"
 import { VersionsStudio } from "./components/Version/studio"
+import { api } from "./services/http"
+import { useVersion } from "../../utils/hooks/useVersion"
+import { getOS } from "../home/services/version"
 
 
 
 const getProjects = async (setProject: (data: Tables<'projects'>) => void, setError: (data: { msg: string, show: boolean }) => void, href: URLSearchParams) => {
     const id = href.get('projectID') || 'NaN'
-    console.log("project -->", href.get('projectID'), isNaN(parseInt(id)))
     if (!isNaN(parseInt(id))) {
         const project = await supabaseClient.from('projects').select().eq('id', parseInt(id))
         if (project.data !== null) {
@@ -30,22 +32,52 @@ const getProjects = async (setProject: (data: Tables<'projects'>) => void, setEr
     }
 }
 
+const getVersions = async (setData: (data: Tables<'version-code'>[]) => void, projectId: number, oss: Tables<'OS'>[]) => {
+    const promises: Promise<Tables<'version-code'> | null>[] = []
+    for await (const item of oss) {
+        api.method = 'get'
+        const d = api.rest<Tables<'version-code'>>(`/version?projectId=${projectId}&os_id=${item.id}&all=true`)
+        if (d) {
+            promises.push(d)
+        }
+    }
+    const promisesResolve = await Promise.all(promises)
+    console.log(promisesResolve)
+    setData(promisesResolve.filter(e => e !== null))
+}
+
 export const Versions = () => {
 
     const { projectSelected, setProject } = useProject(state => state);
+    const { setVersionProduction, oss, setOSs } = useVersion()
     const [loading, setLoading] = useState(false);
     const [showError, setShowError] = useState({ msg: '', show: false })
     const href = new URLSearchParams(location.search)
 
     useEffect(() => {
         if (!projectSelected) {
-            setLoading(true)
-            getProjects(setProject, setShowError, href)
-                .finally(() => {
-                    setLoading(false)
-                })
+            const fn = async () => {
+                setLoading(true)
+                await getOS(setOSs)
+                await getProjects(setProject, setShowError, href)
+                setLoading(false)
+            }
+            fn()
         }
     }, [])
+
+    useEffect(() => {
+        const fn = async () => {
+            setLoading(true)
+            if (projectSelected) {
+                await getVersions(setVersionProduction, projectSelected?.id, oss)
+            }
+            setLoading(false)
+        }
+        if (oss.length !== 0 && projectSelected) {
+            fn()
+        }
+    }, [oss, projectSelected])
 
 
     return (

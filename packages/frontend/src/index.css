@@ -3,9 +3,11 @@
   padding: 0;
   box-sizing: border-box;
 }
-html{
+
+html {
   background-color: #111111;
 }
+
 .not-font {
   font-family: inherit !important;
 }
@@ -21,6 +23,15 @@ html{
 .left-radius-none .MuiInputBase-root {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 5px;
+  background-color: rgb(19, 53, 28);
+}
+.scroll::-webkit-scrollbar-thumb {
+  width: 5px;
+  background-color: rgb(9, 176, 54);
 }
 
 .rotation {
@@ -54,11 +65,11 @@ html{
   55% {
     color: #828fff;
   }
-  
+
   75% {
     color: #D941FF;
   }
-  
+
   100% {
     transform: rotate(-360deg);
     color: #41b9ff;

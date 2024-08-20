@@ -9,6 +9,7 @@ import { useUser } from "./auth/context/user.context";
 import { Home } from "./home";
 import { Workspace } from "./builder/workspace";
 import { Versions } from "./builder/versions";
+import { APKs } from "./apks";
 
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
@@ -83,6 +84,12 @@ export const route = createBrowserRouter([
         path: '/home',
         element: <SessionValidation>
             <Home />
+        </SessionValidation>
+    },
+    {
+        path: '/apks',
+        element: <SessionValidation>
+            <APKs />
         </SessionValidation>
     },
     {

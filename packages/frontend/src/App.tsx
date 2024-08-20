@@ -5,10 +5,21 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { Alert, Snackbar } from '@mui/material'
 import { useAlert } from './layouts/components/AlertGlobal'
+import { useEffect } from 'react'
+import { socket } from './services/socket.io'
 
 function App() {
 
   const state = useAlert()
+  useEffect(() => {
+    socket.on("connection", (data) => {
+      console.log("Socket", data)
+    })
+
+    return () => {
+      socket.close()
+    }
+  }, [])
   return <LocalizationProvider
     dateAdapter={AdapterMoment}
   >

@@ -27,6 +27,8 @@ export class CodeServices {
                 code_build: codebuild.code,
                 code_jsx: codesUnion,
                 publicateBy: version.publicateBy,
+                publicate_by_email: version.publicate_by_email,
+                programing_date: version.programing_date,
                 name: version.name || 'Without Name'
             })
             return requestInsert
@@ -42,8 +44,8 @@ export class CodeServices {
             }
         }
     }
-    getVersionByProject = async (projectId: number) => {
-        return await this.client.from('version-code').select().eq('projectid', projectId).eq('available_production', true).limit(1).order('programing_date', {
+    getVersionByProject = async (projectId: number, os_id: number) => {
+        return await this.client.from('version-code').select().eq('projectid', projectId).eq('os_id', os_id).eq('available_production', true).limit(1).order('programing_date', {
             ascending: false
         })
     }

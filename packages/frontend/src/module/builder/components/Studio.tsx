@@ -5,7 +5,6 @@ import { memo, useEffect, useState } from "react"
 import { Tables } from "../../../database.types"
 import { supabaseClient } from "../../../data/supabase"
 import { isEqual } from "lodash"
-import { Flows } from "./Flows"
 import { EditorJSX } from "./Editor"
 import { PhoneAndroid } from "@mui/icons-material"
 import { useVersion } from "../../../utils/hooks/useVersion"
@@ -17,6 +16,7 @@ import { DateTimePicker } from "@mui/x-date-pickers"
 import { useAlert } from "../../../layouts/components/AlertGlobal"
 import { Console } from "./Console"
 import { useNavigate } from "react-router-dom"
+import { Form } from "./Forms"
 
 
 let render = 0;
@@ -51,13 +51,15 @@ export const StudioWithOutMemo = () => {
         code_build: '',
         code_jsx: '',
         created_at: new Date().toISOString(),
-        programing_date: new Date().toISOString(),
+        programing_date: moment().toISOString(),
         os_id: 0,
         projectid: project.id,
+        publicate_by_email: user.email || '',
         publicateBy: user.id,
         name: '',
         id: 0
     })
+    const [programing_date, setPrograming_date] = useState(moment(version.programing_date))
     const [name, setName] = useState('')
     const navigate = useNavigate()
     useEffect(() => {
@@ -102,8 +104,10 @@ export const StudioWithOutMemo = () => {
                 ...version,
                 code_jsx: code.join('\n'),
                 os_id: osSelected,
-                name
+                programing_date: programing_date.toISOString(),
+                name,
             }
+
             console.log(v)
             api.method = 'post'
             api.bodyInit = v
@@ -120,7 +124,8 @@ export const StudioWithOutMemo = () => {
                 code_build: '',
                 code_jsx: '',
                 created_at: new Date().toISOString(),
-                programing_date: new Date().toISOString(),
+                programing_date: moment().toISOString(),
+                publicate_by_email: user.email || '',
                 os_id: 0,
                 projectid: project.id,
                 publicateBy: user.id,
@@ -210,10 +215,10 @@ export const StudioWithOutMemo = () => {
                                     size: 'small'
                                 }
                             }}
-                            value={moment(version.programing_date)}
+                            value={programing_date}
                             onChange={(e) => {
                                 if (e) {
-                                    setVersion({ ...version, programing_date: e.toISOString() })
+                                    setPrograming_date(e)
                                 }
                             }}
                         />
@@ -305,7 +310,7 @@ export const StudioWithOutMemo = () => {
                             editor ?
                                 <EditorJSX />
                                 :
-                                <Flows />
+                                <Form />
                         }
                     </Grid>
                     <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2 }}>

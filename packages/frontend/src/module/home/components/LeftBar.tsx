@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Grid, IconButton, SvgIconTypeMap, Tooltip } from '@mui/material'
 import imgLogo from '../../../assets/ICON.svg'
 import { Link } from '../../../layouts/components/Link'
-import { BookOnline, DataObject, ForkLeft, Settings, StorageOutlined, Workspaces } from '@mui/icons-material'
+import { AndroidOutlined, DataObject, ForkLeft, Settings, StorageOutlined, Workspaces } from '@mui/icons-material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 import { useNavigate } from 'react-router-dom'
 export const LeftBar = ({ open }: { open: boolean, toggle: () => void }) => {
@@ -76,16 +76,16 @@ const options: Record<string, menuItem[]> = {
             height: '40px',
             width: '40px'
         },
-        {
-            path: '/project',
-            typeIcon: 'icon',
-            title: 'Proyectos',
-            Icon: BookOnline
-        }
+        // {
+        //     path: '/project',
+        //     typeIcon: 'icon',
+        //     title: 'Proyectos',
+        //     Icon: BookOnline
+        // }
     ],
     development: [
         {
-            path: '/workspace',
+            path: '/',
             title: 'Zona de trabajo',
             typeIcon: 'icon',
             Icon: Workspaces
@@ -97,11 +97,17 @@ const options: Record<string, menuItem[]> = {
             Icon: DataObject
         },
         {
-            path: '/versions',
+            path: '/workspace/versions',
             title: 'Versiones',
             typeIcon: 'icon',
             Icon: ForkLeft
         },
+        {
+            path:'/APKS',
+            title:'APKs',
+            typeIcon:'icon',
+            Icon:AndroidOutlined
+        }
     ],
     services: [
         {
