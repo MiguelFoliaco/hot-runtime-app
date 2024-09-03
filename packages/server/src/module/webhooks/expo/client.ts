@@ -1,20 +1,34 @@
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { IHandler, IHandlerSync } from "../../../types";
+import { IHandler } from "../../../types";
 import { Socket } from "socket.io";
 import { env } from "../../../utils";
 import axios from "axios";
+import { PayloadBuild } from "./interfaces/payloadBuilds";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { Database } from "../../../database.types";
 
 export class ClientWebHookExpo {
-    constructor() { }
 
-    getBuildStatus: IHandlerSync = (req, res) => {
+    constructor(private db: SupabaseClient<Database, 'public'>) { }
+
+    getBuildStatus: IHandler = async (req, res) => {
         try {
-            console.log('entry', req.body)
+            const body = req.body as PayloadBuild
             const io = req.app.get('IO') as Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+            const datasave = await this.db.from('builds').insert({
+                git_commit_hash: body.metadata.gitCommitHash,
+                git_commit_message: body.metadata.gitCommitMessage,
+                logs_s3_key_prefix: body.artifacts.logsS3KeyPrefix || 'empity',
+                build_url: body.artifacts.buildUrl,
+                created_at: body.createdAt,
+                payload_str: JSON.stringify(body),
+                size: body.metrics.totalDiskWriteBytes,
+            })
+            console.log(datasave, "DATA-SAVE")
             if (io) {
-                io.broadcast.emit('send-status-apk', req.body)
+                io.emit('send-status-apk', body)
             }
-            return res.json(req.body)
+            return res.json(body)
         } catch (err) {
             console.log('Error', err)
             return res.json({ msg: 'Error en obtener la respuesta', status: true })

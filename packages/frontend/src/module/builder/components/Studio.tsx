@@ -303,14 +303,14 @@ export const StudioWithOutMemo = () => {
                         <Typography variant='overline'>{project?.name}</Typography>
                         <Button onClick={() => navigate(`/workspace/versions?projectID=${project.id}`)} size='small'>{'Listado de versiones'}</Button>
                         <Button onClick={() => setOpenModalVersion(true)} size='small'>{'Generar Version'}</Button>
-                        <Button onClick={() => setEditor(!editor)} size='small'>{editor ? 'Flow' : 'Escribir codigo'}</Button>
+                        <Button onClick={() => setEditor(!editor)} size='small'>{editor ? 'Formulario' : 'Escribir codigo'}</Button>
                     </Grid>
                     <Grid item xs={12} sx={{ p: 1 }}>
                         {
                             editor ?
                                 <EditorJSX />
                                 :
-                                <Form />
+                                <Form setInfoCompilation={setInfoCompilation} />
                         }
                     </Grid>
                     <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2 }}>

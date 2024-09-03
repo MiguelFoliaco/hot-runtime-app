@@ -9,7 +9,7 @@ import { useProject } from "../../../utils/hooks/useProjects";
 
 //const colors = [red[800], blue[900], green[700], purple[900], yellow[900]]
 
-export const CreateProject = () => {
+export const CreateProject = ({ closeModal }: { closeModal?: () => void }) => {
 
     const { values: { user } } = useUser()
     const setProjects = useProject(state => state.setProjects)
@@ -29,6 +29,11 @@ export const CreateProject = () => {
                     publicateBy: user.id,
                     description,
                 })
+                if (!project.error) {
+                    if (closeModal) {
+                        closeModal()
+                    }
+                }
                 if (project.data) {
                     alert('Se creo el projecto, redirigiendo...')
                 }
@@ -48,6 +53,7 @@ export const CreateProject = () => {
 
     return (
         <Modal
+            onClose={closeModal}
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             open={true}>
             <Paper sx={{ width: '400px', height: '300px', p: 2 }}>

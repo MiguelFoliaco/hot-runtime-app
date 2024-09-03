@@ -2,10 +2,10 @@ import { Fragment } from 'react'
 import { Grid, IconButton, SvgIconTypeMap, Tooltip } from '@mui/material'
 import imgLogo from '../../../assets/ICON.svg'
 import { Link } from '../../../layouts/components/Link'
-import { AndroidOutlined, DataObject, ForkLeft, Settings, StorageOutlined, Workspaces } from '@mui/icons-material'
+import { AndroidOutlined, ForkLeft, NotificationAddOutlined, Workspaces } from '@mui/icons-material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 import { useNavigate } from 'react-router-dom'
-export const LeftBar = ({ open }: { open: boolean, toggle: () => void }) => {
+export const LeftBar = ({ open }: { open: boolean }) => {
 
     const navigate = useNavigate()
     const keys = Object.keys(options) as [keyof typeof options]
@@ -91,36 +91,36 @@ const options: Record<string, menuItem[]> = {
             Icon: Workspaces
         },
         {
-            path: '/code',
-            title: 'Componentes',
-            typeIcon: 'icon',
-            Icon: DataObject
-        },
-        {
             path: '/workspace/versions',
             title: 'Versiones',
             typeIcon: 'icon',
             Icon: ForkLeft
         },
         {
-            path:'/APKS',
-            title:'APKs',
-            typeIcon:'icon',
-            Icon:AndroidOutlined
+            path: '/APKS',
+            title: 'APKs',
+            typeIcon: 'icon',
+            Icon: AndroidOutlined
         }
     ],
     services: [
         {
-            path: '/db',
-            title: 'Base de datos',
+            path: '/notify',
+            title: 'Notificaciones',
             typeIcon: 'icon',
-            Icon: StorageOutlined
-        },
-        {
-            path: '/settings',
-            title: 'Configuraciones',
-            typeIcon: 'icon',
-            Icon: Settings
-        },
+            Icon: NotificationAddOutlined
+        }
+        // {
+        //     path: '/db',
+        //     title: 'Base de datos',
+        //     typeIcon: 'icon',
+        //     Icon: StorageOutlined
+        // },
+        // {
+        //     path: '/settings',
+        //     title: 'Configuraciones',
+        //     typeIcon: 'icon',
+        //     Icon: Settings
+        // },
     ]
 }

@@ -2,11 +2,12 @@ import { Alert, CircularProgress, Grid, IconButton, Snackbar } from "@mui/materi
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { useProject } from "../../utils/hooks/useProjects"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Tables } from "../../database.types"
 import { supabaseClient } from "../../data/supabase"
 import { Close } from "@mui/icons-material"
 import { Studio } from "./components/Studio"
+import { useComponents } from "../../utils/hooks/useComponent"
 
 
 
@@ -33,9 +34,15 @@ const getProjects = async (setProject: (data: Tables<'projects'>) => void, setEr
 export const Workspace = () => {
 
     const { projectSelected, setProject } = useProject(state => state);
+    const { setComponent, setComponents } = useComponents()
     const [loading, setLoading] = useState(false);
     const [showError, setShowError] = useState({ msg: '', show: false })
     const href = new URLSearchParams(location.search)
+
+    const clear = useCallback(() => {
+        setComponent(undefined)
+        setComponents([])
+    }, [projectSelected])
 
     useEffect(() => {
         if (!projectSelected) {
@@ -46,7 +53,6 @@ export const Workspace = () => {
                 })
         }
     }, [])
-
 
     return (
         <LayoutBuilder
@@ -73,6 +79,7 @@ export const Workspace = () => {
                     </IconButton>
                 </Alert>
             </Snackbar>
+
         </LayoutBuilder>
     )
 }

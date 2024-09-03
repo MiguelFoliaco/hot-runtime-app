@@ -15,10 +15,6 @@ function App() {
     socket.on("connection", (data) => {
       console.log("Socket", data)
     })
-
-    return () => {
-      socket.close()
-    }
   }, [])
   return <LocalizationProvider
     dateAdapter={AdapterMoment}

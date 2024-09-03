@@ -29,6 +29,7 @@ html {
   width: 5px;
   background-color: rgb(19, 53, 28);
 }
+
 .scroll::-webkit-scrollbar-thumb {
   width: 5px;
   background-color: rgb(9, 176, 54);
@@ -40,6 +41,20 @@ html {
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   transition: 200ms ease-in-out;
+}
+
+.form {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.form .MuiGrid-root {
+  width: 100% !important;
+  margin-bottom: 10px;
+}
+
+.form label {
+  margin-bottom: 10px;
 }
 
 @keyframes fondo-animado {

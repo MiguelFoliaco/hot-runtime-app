@@ -1,4 +1,6 @@
-export type Json =
+Need to install the following packages:
+supabase@1.191.3
+Ok to proceed? (y) export type Json =
   | string
   | number
   | boolean
@@ -9,6 +11,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      builds: {
+        Row: {
+          build_url: string
+          created_at: string
+          git_commit_hash: string
+          git_commit_message: string
+          id: number
+          logs_s3_key_prefix: string
+          payload_str: string
+          size: number | null
+        }
+        Insert: {
+          build_url?: string
+          created_at?: string
+          git_commit_hash: string
+          git_commit_message: string
+          id?: number
+          logs_s3_key_prefix: string
+          payload_str?: string
+          size?: number | null
+        }
+        Update: {
+          build_url?: string
+          created_at?: string
+          git_commit_hash?: string
+          git_commit_message?: string
+          id?: number
+          logs_s3_key_prefix?: string
+          payload_str?: string
+          size?: number | null
+        }
+        Relationships: []
+      }
       code: {
         Row: {
           aviable_production: boolean | null
