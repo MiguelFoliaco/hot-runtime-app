@@ -30,6 +30,4 @@ export class CodeController {
         }
         return res.send(template(app))
     }
-
-
 }

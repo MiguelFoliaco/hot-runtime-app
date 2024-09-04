@@ -15,6 +15,7 @@ import { Tables } from "../../database.types"
 import { getProjects } from "../home/services/projects"
 import { FileObject } from '@supabase/storage-js';
 import { supabaseClient } from "../../data/supabase"
+import { useNavigate } from "react-router-dom"
 
 
 
@@ -26,6 +27,7 @@ export const APKs = () => {
     const [build, setBuild] = useState<FileObject>()
     const { openAlert } = useAlert()
     const { values: { session } } = useUser()
+    const linkTo = useNavigate()
 
 
     useEffect(() => {
@@ -94,12 +96,15 @@ export const APKs = () => {
 
     const downloadFile = async (e: FileObject) => {
         if (projectSelected) {
-            return;
             const file = await supabaseClient.storage.from('apks').download(`debugs/${projectSelected.name}/${e.name}`)
-            openAlert({
-                msg: 'Se esta descargando el archivo...',
-                severity: 'info'
-            })
+            if (file.data) {
+                const url = window.URL.createObjectURL(file.data)
+                window.open(url, '_blank')
+                openAlert({
+                    msg: 'Se esta descargando el archivo...',
+                    severity: 'info'
+                })
+            }
         }
     }
     const getFiles = (value: string) => {
