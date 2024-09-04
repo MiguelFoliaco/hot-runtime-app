@@ -170,6 +170,30 @@ export type Database = {
         }
         Relationships: []
       }
+      process: {
+        Row: {
+          created_at: string
+          id: number
+          last_update: string
+          process_id: string
+          status: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          last_update?: string
+          process_id?: string
+          status?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          last_update?: string
+          process_id?: string
+          status?: boolean | null
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           created_at: string

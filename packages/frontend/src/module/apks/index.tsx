@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, MenuItem, Select, Tooltip, Typography } from "@mui/material"
+import { Button, CircularProgress, Grid, IconButton, MenuItem, Select, Tooltip, Typography } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { Android, ContentCopy, Download, RemoveRedEye, Replay } from "@mui/icons-material"
@@ -11,42 +11,38 @@ import { useAPKs } from "./context/useAPKs"
 import moment from "moment"
 import { PayloadBuild } from "./types/Payload"
 import { useProject } from "../../utils/hooks/useProjects"
-import { Tables } from "../../database.types"
 import { getProjects } from "../home/services/projects"
 import { FileObject } from '@supabase/storage-js';
 import { supabaseClient } from "../../data/supabase"
-import { useNavigate } from "react-router-dom"
-
+import { statusProccess } from "../../utils/getStatusProccess"
+import { PROCESS_TYPE } from "../../types/proccess_enums"
+import { Tables } from "../../database.types"
+import { Console } from "../builder/components/Console"
 
 
 export const APKs = () => {
 
     const [isLoading, setIsLoading] = useState(false)
+    const [statusProcessApk, setStatusProcessApk] = useState<Tables<'process'>>({ status: true })
     const { projects, setProjects, setProject, projectSelected } = useProject()
     const { builds, fillBuilds } = useAPKs()
+    const [openConsole, setOpenConsole] = useState(true)
+    const [payloads, setPayloads] = useState<PayloadBuild[]>([])
     const [build, setBuild] = useState<FileObject>()
     const { openAlert } = useAlert()
     const { values: { session } } = useUser()
-    const linkTo = useNavigate()
 
 
     useEffect(() => {
+        statusProccess(PROCESS_TYPE.APK_GENERATE, setStatusProcessApk)
         if (projects.length === 0) {
             getProjects({ setProjevt: setProjects })
         }
         socket.on('send-status-apk', (data: PayloadBuild) => {
-            console.log(data)
-            if (data.status === 'finished') {
-                openAlert({
-                    msg: 'La apk se ha generado exitosamente',
-                    severity: 'info'
-                })
-            }
-            if (data.status === 'errored') {
-                openAlert({
-                    msg: 'Ha ocurrido un error en general la apk',
-                    severity: 'error'
-                })
+            console.log("STATUS APK", data)
+            setPayloads(state => state.concat(data))
+            if (data.workflow_job.status === 'completed') {
+                statusProccess(PROCESS_TYPE.APK_GENERATE, setStatusProcessApk)
             }
         })
         return () => {
@@ -55,12 +51,19 @@ export const APKs = () => {
     }, [])
 
     const generateAPK = async () => {
-        api.method = 'get'
-        const data = await api.rest<{ error: boolean, msg: string }>(`/expo/generate-apk?workflows_id=115439875`, {
+        if (statusProcessApk?.status) {
+            return openAlert({ msg: 'Hay una generación en curso, por favor espere a que este termine para empezar uno nuevo', severity: 'warning' })
+        }
+        if (!projectSelected) {
+            return openAlert({ msg: 'Por favor seleccione un proyecto', severity: 'warning' })
+        }
+        api.method = 'post'
+        const data = await api.rest<{ error: boolean, msg: string }>(`/github/generate-apk?workflows_id=115439875&project_id=${projectSelected?.id}`, {
             headers: {
                 Authorization: `Bearer ${session?.access_token}`
             }
         })
+        console.log("Data ", data)
         if (data?.error) {
             openAlert({
                 msg: data.msg || "Ocurrio un error",
@@ -71,17 +74,8 @@ export const APKs = () => {
                 msg: "Te avisaremos cuando todo este listo :)",
                 severity: "success"
             })
-        }
-    }
+            statusProccess(PROCESS_TYPE.APK_GENERATE, setStatusProcessApk)
 
-    const getColor = (status: PayloadBuild['status']) => {
-        switch (status) {
-            case 'canceled':
-                return '#e8dfdf'
-            case 'errored':
-                return '#ff5f5f'
-            case 'finished':
-                return '#a6ff94'
         }
     }
 
@@ -160,9 +154,10 @@ export const APKs = () => {
                 </Grid>
                 {
                     builds.length === 0 ?
-                        <Grid item xs={12} sx={{ flexDirection: 'column', height: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Grid item xs={12} sx={{ flexDirection: 'column', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Typography>Aun no nada aquí</Typography>
                             <Button
+                                disabled={statusProcessApk?.status ?? false}
                                 onClick={generateAPK}
                                 sx={{ mt: 1 }} color='secondary'
                                 endIcon={<Android />}
@@ -170,7 +165,7 @@ export const APKs = () => {
                         </Grid>
                         :
                         <Fragment>
-                            <Grid item xs={build ? 8 : 12} sx={{ flexDirection: 'column', height: '90%', transition: '200ms' }}>
+                            <Grid item xs={build ? 8 : 12} sx={{ flexDirection: 'column', height: '80%', transition: '200ms' }}>
                                 {
                                     builds.map(e => (
                                         <Grid container key={`build-list-item-${e.id}`} sx={{ bgcolor: '#090909', border: '1px solid #1f1f1f', p: 0.5, px: 1, mb: 2, borderRadius: 1 }}>
@@ -221,9 +216,10 @@ export const APKs = () => {
                                     ))
                                 }
                                 <Button
+                                    disabled={statusProcessApk?.status ?? false}
                                     onClick={generateAPK}
                                     sx={{ position: 'absolute', bottom: 10, right: 10 }} color='secondary'
-                                    endIcon={<Android />}
+                                    endIcon={(statusProcessApk?.status ?? false) ? <CircularProgress size='20px' /> : <Android />}
                                 >Compilar una version</Button>
                             </Grid>
                             <Grid item xs={build ? 4 : 0} className="scroll" sx={{ opacity: build ? 1 : 0, transition: '200ms', height: '500px', width: build ? undefined : '0px', overflowX: 'scroll', overflowY: 'scroll', }}>
@@ -237,7 +233,36 @@ export const APKs = () => {
                             </Grid>
                         </Fragment>
                 }
+
+                {
+                    openConsole &&
+                    <Grid sx={{ position: 'absolute', bottom: 10, width: '50%' }}>
+                        <Console sx={{ height: '200px', overflowY: 'scroll' }}>
+                            {
+                                payloads.map((e, i) => (
+                                    <div key={`log-key-${i}`}>
+                                        {e?.workflow_job?.run_id && <Typography variant="overline">Run id [<Typography variant='overline' color='secondary'>{e?.workflow_job?.run_id}</Typography>]</Typography>}
+                                        <br />
+                                        {e?.workflow_job?.status && <Typography variant="overline">Workflow Name [<Typography variant='overline' color='secondary'>{e?.workflow_job?.name}</Typography>]</Typography>}
+                                        <br />
+                                        {e?.workflow_job?.status && <Typography variant="overline">Workflow State <Typography variant='overline' color='secondary'>{e?.workflow_job?.status}</Typography></Typography>}
+                                        {
+                                            e?.workflow_job?.status &&
+                                            <img style={{ marginLeft: 10, marginTop: 5 }} src={`https://img.shields.io/badge/${e?.workflow_job?.status}-${status[e?.workflow_job?.status as keyof typeof status] || 'gray'}`} alt='img-badget' />
+                                        }
+                                    </div>
+                                ))
+                            }
+                        </Console>
+                    </Grid>
+                }
             </Grid>
         </LayoutBuilder>
     )
+}
+
+const status = {
+    'completed': 'green',
+    'queued': 'blue',
+    'error': 'red'
 }
