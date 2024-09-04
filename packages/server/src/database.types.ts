@@ -1,6 +1,4 @@
-Need to install the following packages:
-supabase@1.191.3
-Ok to proceed? (y) export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -169,6 +167,30 @@ export type Database = {
           created_at?: string
           id?: number
           name?: string
+        }
+        Relationships: []
+      }
+      process: {
+        Row: {
+          created_at: string
+          id: number
+          last_update: string
+          process_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          last_update?: string
+          process_id?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          last_update?: string
+          process_id?: string
+          status?: string
         }
         Relationships: []
       }

@@ -23,7 +23,7 @@ import { Console } from "../builder/components/Console"
 export const APKs = () => {
 
     const [isLoading, setIsLoading] = useState(false)
-    const [statusProcessApk, setStatusProcessApk] = useState<Tables<'process'>>({ status: true })
+    const [statusProcessApk, setStatusProcessApk] = useState<Partial<Tables<'process'>>>({ status: 'on' })
     const { projects, setProjects, setProject, projectSelected } = useProject()
     const { builds, fillBuilds } = useAPKs()
     const [openConsole, setOpenConsole] = useState(true)
@@ -41,7 +41,7 @@ export const APKs = () => {
         socket.on('send-status-apk', (data: PayloadBuild) => {
             console.log("STATUS APK", data)
             setPayloads(state => state.concat(data))
-            if (data.workflow_job.status === 'completed') {
+            if (data?.workflow_job?.status === 'completed') {
                 statusProccess(PROCESS_TYPE.APK_GENERATE, setStatusProcessApk)
             }
         })
@@ -157,7 +157,7 @@ export const APKs = () => {
                         <Grid item xs={12} sx={{ flexDirection: 'column', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Typography>Aun no nada aquí</Typography>
                             <Button
-                                disabled={statusProcessApk?.status ?? false}
+                                disabled={statusProcessApk?.status==='on'}
                                 onClick={generateAPK}
                                 sx={{ mt: 1 }} color='secondary'
                                 endIcon={<Android />}
@@ -216,10 +216,10 @@ export const APKs = () => {
                                     ))
                                 }
                                 <Button
-                                    disabled={statusProcessApk?.status ?? false}
+                                    disabled={statusProcessApk?.status==='on'}
                                     onClick={generateAPK}
                                     sx={{ position: 'absolute', bottom: 10, right: 10 }} color='secondary'
-                                    endIcon={(statusProcessApk?.status ?? false) ? <CircularProgress size='20px' /> : <Android />}
+                                    endIcon={(statusProcessApk?.status==='on') ? <CircularProgress size='20px' /> : <Android />}
                                 >Compilar una version</Button>
                             </Grid>
                             <Grid item xs={build ? 4 : 0} className="scroll" sx={{ opacity: build ? 1 : 0, transition: '200ms', height: '500px', width: build ? undefined : '0px', overflowX: 'scroll', overflowY: 'scroll', }}>
@@ -241,14 +241,14 @@ export const APKs = () => {
                             {
                                 payloads.map((e, i) => (
                                     <div key={`log-key-${i}`}>
-                                        {e?.workflow_job?.run_id && <Typography variant="overline">Run id [<Typography variant='overline' color='secondary'>{e?.workflow_job?.run_id}</Typography>]</Typography>}
+                                        {e?.workflow_job?.run_id || e?.workflow_run?.id && <Typography variant="overline">Run id [<Typography variant='overline' color='secondary'>{e?.workflow_job?.run_id || e?.workflow_run?.id}</Typography>]</Typography>}
                                         <br />
-                                        {e?.workflow_job?.status && <Typography variant="overline">Workflow Name [<Typography variant='overline' color='secondary'>{e?.workflow_job?.name}</Typography>]</Typography>}
+                                        {e?.workflow_job?.name && <Typography variant="overline">Workflow Name [<Typography variant='overline' color='secondary'>{e?.workflow_job?.name}</Typography>]</Typography>}
                                         <br />
-                                        {e?.workflow_job?.status && <Typography variant="overline">Workflow State <Typography variant='overline' color='secondary'>{e?.workflow_job?.status}</Typography></Typography>}
+                                        {(e?.workflow_job?.status || e?.workflow?.state) && <Typography variant="overline">Workflow State <Typography variant='overline' color='secondary'>{e?.workflow_job?.status}</Typography></Typography>}
                                         {
-                                            e?.workflow_job?.status &&
-                                            <img style={{ marginLeft: 10, marginTop: 5 }} src={`https://img.shields.io/badge/${e?.workflow_job?.status}-${status[e?.workflow_job?.status as keyof typeof status] || 'gray'}`} alt='img-badget' />
+                                            e?.workflow_job?.status || e?.workflow?.state &&
+                                            <img style={{ marginLeft: 10, marginTop: 5 }} src={`https://img.shields.io/badge/${e?.workflow_job?.status || e?.workflow?.state}-${status[(e?.workflow_job?.status || e?.workflow?.state) as keyof typeof status] || 'gray'}`} alt='img-badget' />
                                         }
                                     </div>
                                 ))
@@ -262,6 +262,7 @@ export const APKs = () => {
 }
 
 const status = {
+    'active': 'green',
     'completed': 'green',
     'queued': 'blue',
     'error': 'red'

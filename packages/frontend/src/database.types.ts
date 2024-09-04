@@ -176,21 +176,21 @@ export type Database = {
           id: number
           last_update: string
           process_id: string
-          status: boolean | null
+          status: string
         }
         Insert: {
           created_at?: string
           id?: number
           last_update?: string
           process_id?: string
-          status?: boolean | null
+          status?: string
         }
         Update: {
           created_at?: string
           id?: number
           last_update?: string
           process_id?: string
-          status?: boolean | null
+          status?: string
         }
         Relationships: []
       }

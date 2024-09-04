@@ -1,12 +1,12 @@
 import { Router } from "express";
-// import { verifySession } from '../../auth/middleware/verifySession'
 import { client as _ } from "../../../db";
 import { ClientWebHookGithub } from "./client";
+import { verifySession } from "../../auth/middleware/verifySession";
 
 const routeWebHookGihub = Router()
 const client = new ClientWebHookGithub(_)
 
 routeWebHookGihub.post('/github', client.getStatusWorkflows)
-// routeWebHook.get('/expo/generate-apk', verifySession, client.generateAPK)
+routeWebHookGihub.post('/github/generate-apk', verifySession, client.generateGithub)
 
 export { routeWebHookGihub }
