@@ -91,11 +91,11 @@ export const threeecondary = createTheme({
             dark: '#c51818'
         },
         text: {
-            primary: '#1f1f1f',
+            primary: '#e6e6e6',
             secondary: '#a0a0a0'
         },
         background: {
-            paper: '#000000',
+            paper: '#2a2a2a',
             default: '#3d3d3d'
         }
     },

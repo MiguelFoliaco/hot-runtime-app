@@ -1,7 +1,6 @@
 import { Grid, Typography } from "@mui/material"
-import { ThemeMap, useThemeClient } from "../../../utils/hooks/useTheme"
+import { themeNames, useThemeClient } from "../../../utils/hooks/useTheme"
 
-const themes: ThemeMap[] = ['light', 'primary', 'secondary', 'BayronTheme']
 export const ThemeConfigModule = () => {
     const { themeList, setTheme, themeSelected } = useThemeClient();
 
@@ -12,7 +11,7 @@ export const ThemeConfigModule = () => {
             </Grid>
             <Grid item xs={12} sx={{ display: 'flex', gap: 1 }}>
                 {
-                    themes.map((e, i) => (
+                    themeNames.map((e, i) => (
                         <Grid onClick={() => setTheme(e)} key={`theme-key-${e}-${i}`} sx={{ cursor: 'pointer', transition: '200ms', ':hover': { transform: 'scale(0.95)' }, opacity: themeSelected === e ? 0.6 : 1 }} >
                             <Typography variant="overline">{e}</Typography>
                             <Grid sx={{ border: '1px solid #ddd', mt: 0.6 }}>

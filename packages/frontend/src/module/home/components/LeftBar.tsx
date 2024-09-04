@@ -11,6 +11,7 @@ export const LeftBar = ({ open }: { open: boolean }) => {
     const navigate = useNavigate()
     const _location = useLocation()
     const keys = Object.keys(options) as [keyof typeof options]
+
     return (
         <Grid sx={{ height: '100%', bgcolor: 'background.main', px: 1 }}>
             {
@@ -33,7 +34,7 @@ export const LeftBar = ({ open }: { open: boolean }) => {
                                                         }}>
                                                             <Tooltip placement='left-end' title={Item.title}>
                                                                 <IconButton sx={{ my: 0.5 }}>
-                                                                    <Item.Icon color={Item.path === _location.pathname ? 'primary' : 'disabled'} />
+                                                                    <Item.Icon color={Item.path.trim() === location.pathname.trim() ? 'primary' : 'disabled'} />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </span>

@@ -3,6 +3,7 @@ import { themePrimary, themeSecondary, threeecondary } from "../../themes/primar
 import { Theme } from "@mui/material";
 
 export type ThemeMap = 'primary' | 'secondary' | 'light' | 'BayronTheme'
+export const themeNames: ThemeMap[] = ['BayronTheme', 'light', 'primary', 'secondary']
 type ThemeHook = {
     themeSelected: ThemeMap,
     themeList: Record<ThemeMap, Theme>

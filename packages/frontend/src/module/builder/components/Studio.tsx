@@ -288,7 +288,7 @@ export const StudioWithOutMemo = () => {
                                             >
                                                 <Typography variant="overline" color={e.id === componentSelected?.id ? 'primary.main' : 'white'} key={`code-item-${e.id}`}>{e.name}</Typography>
                                                 {
-                                                    e.main_component == true && <PhoneAndroid color='primary' fontSize="small" />
+                                                    e.main_component  && <PhoneAndroid color='primary' fontSize="small" />
                                                 }
                                             </Grid>
                                         ))
