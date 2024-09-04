@@ -1,26 +1,28 @@
 import { Fragment } from 'react'
-import { Grid, IconButton, SvgIconTypeMap, Tooltip } from '@mui/material'
+import { Grid, IconButton, SvgIconTypeMap, Tooltip, useTheme } from '@mui/material'
 import imgLogo from '../../../assets/ICON.svg'
 import { Link } from '../../../layouts/components/Link'
-import { AndroidOutlined, ForkLeft, NotificationAddOutlined, Workspaces } from '@mui/icons-material'
+import { AndroidOutlined, ColorLens, ForkLeft, NotificationAddOutlined, Workspaces } from '@mui/icons-material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
-import { useNavigate } from 'react-router-dom'
-export const LeftBar = ({ open }: { open: boolean }) => {
+import { useLocation, useNavigate } from 'react-router-dom'
 
+export const LeftBar = ({ open }: { open: boolean }) => {
+    const theme = useTheme()
     const navigate = useNavigate()
+    const _location = useLocation()
     const keys = Object.keys(options) as [keyof typeof options]
     return (
-        <Grid sx={{ height: '100%', bgcolor: '#1f1f1f', px: 1 }}>
+        <Grid sx={{ height: '100%', bgcolor: 'background.main', px: 1 }}>
             {
                 keys.map((e, i) => (
-                    <Grid key={`item-menu-group-${e}`} sx={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', py: 1, border: '2px solid #4b4b4b', borderTop: i === 0 ? 'inherit' : 'none', borderInline: 'none' }}>
+                    <Grid key={`item-menu-group-${e}`} sx={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', py: 1, border: (theme) => `2px solid ${theme.palette.text.secondary}`, borderTop: i === 0 ? 'inherit' : 'none', borderInline: 'none' }}>
                         {
                             options[e].map(Item => (
                                 <Fragment key={`item-menu-group-${e}-item-${Item.path}`}>
                                     {
                                         open ?
                                             <Grid sx={{ px: 1, py: 2 }} >
-                                                <Link to={Item.path}>{Item.title}</Link>
+                                                <Link to={Item.path} color={theme.palette.text.primary}>{Item.title}</Link>
                                             </Grid>
                                             :
                                             <>
@@ -31,7 +33,7 @@ export const LeftBar = ({ open }: { open: boolean }) => {
                                                         }}>
                                                             <Tooltip placement='left-end' title={Item.title}>
                                                                 <IconButton sx={{ my: 0.5 }}>
-                                                                    <Item.Icon color='disabled' />
+                                                                    <Item.Icon color={Item.path === _location.pathname ? 'primary' : 'disabled'} />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </span>
@@ -122,5 +124,13 @@ const options: Record<string, menuItem[]> = {
         //     typeIcon: 'icon',
         //     Icon: Settings
         // },
+    ],
+    others: [
+        {
+            path: '/config/theme',
+            title: 'Temas',
+            typeIcon: 'icon',
+            Icon: ColorLens,
+        }
     ]
 }

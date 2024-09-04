@@ -19,7 +19,6 @@ async function loginWithGithub() {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'github',
         options: {
-            //  redirectTo: 'https://zsfrrxykerwymjkaiasp.supabase.co/auth/v1/callback'
         }
     })
 

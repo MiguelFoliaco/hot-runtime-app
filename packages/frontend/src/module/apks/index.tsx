@@ -18,6 +18,7 @@ import { statusProccess } from "../../utils/getStatusProccess"
 import { PROCESS_TYPE } from "../../types/proccess_enums"
 import { Tables } from "../../database.types"
 import { Console } from "../builder/components/Console"
+import { config } from "../../configs/constants"
 
 
 export const APKs = () => {
@@ -51,14 +52,14 @@ export const APKs = () => {
     }, [])
 
     const generateAPK = async () => {
-        if (statusProcessApk?.status) {
+        if (statusProcessApk?.status==='on') {
             return openAlert({ msg: 'Hay una generación en curso, por favor espere a que este termine para empezar uno nuevo', severity: 'warning' })
         }
         if (!projectSelected) {
             return openAlert({ msg: 'Por favor seleccione un proyecto', severity: 'warning' })
         }
         api.method = 'post'
-        const data = await api.rest<{ error: boolean, msg: string }>(`/github/generate-apk?workflows_id=115439875&project_id=${projectSelected?.id}`, {
+        const data = await api.rest<{ error: boolean, msg: string }>(`/github/generate-apk?workflows_id=${config.workflowGenerateApkId}&project_id=${projectSelected?.id}`, {
             headers: {
                 Authorization: `Bearer ${session?.access_token}`
             }

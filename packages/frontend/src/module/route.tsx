@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { NoTransferRounded } from "@mui/icons-material";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 import { Session } from "@supabase/supabase-js";
@@ -10,6 +10,8 @@ import { Home } from "./home";
 import { Workspace } from "./builder/workspace";
 import { Versions } from "./builder/versions";
 import { APKs } from "./apks";
+import { Config } from "./config/Config";
+import { ThemeConfigModule } from "./config/theme";
 
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
@@ -91,6 +93,18 @@ export const route = createBrowserRouter([
         element: <SessionValidation>
             <APKs />
         </SessionValidation>
+    },
+    {
+        path: '/config',
+        element: <SessionValidation>
+            <Config />
+        </SessionValidation>,
+        children: [
+            {
+                path: 'theme',
+                element: <ThemeConfigModule />
+            }
+        ]
     },
     {
         path: '/*',

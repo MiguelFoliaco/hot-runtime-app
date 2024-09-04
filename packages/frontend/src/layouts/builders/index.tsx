@@ -31,7 +31,7 @@ export const LayoutBuilder = ({ children, listItemsLeft: ListLeft }: { children:
 
     return <Fragment>
         <Grid container sx={{ display: 'grid', gridTemplateColumns: 'repeat(25,1fr)', gridTemplateRows: 'repeat(20,5vh )' }}>
-            <Grid item xs={12} container bgcolor={'#00000020'} sx={{ width: '100%', display: 'flex', alignItems: 'center', gridRowEnd: 2, gridRowStart: 1, gridColumnStart: 1, gridColumnEnd: 26, p: 0.2, px: 2, justifyContent: 'space-between' }}>
+            <Grid item xs={12} container sx={{ width: '100%', display: 'flex', alignItems: 'center', gridRowEnd: 2, gridRowStart: 1, gridColumnStart: 1, gridColumnEnd: 26, p: 0.2, px: 2, justifyContent: 'space-between', bgcolor:'background.paper', boxShadow:t=>`3px 3px 6px ${t.palette.text.primary}10` }}>
                 <Typography variant='overline' >{user?.email}</Typography>
                 <Grid>
                     <IconButton

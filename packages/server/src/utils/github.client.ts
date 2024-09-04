@@ -1,8 +1,9 @@
+import { config } from "../config/constants";
 import { env } from "./env";
 import { RequestTools } from "./requestTools";
 
 export const githubClient = new RequestTools({
-    uri: 'https://api.github.com/repos/MiguelFoliaco/runtime-rn',
+    uri: `${config.gitHubUrl}/${config.ownerRepo}/${config.repo}`,
     configAxios: {
         headers: {
             Authorization: `Bearer ${env('GITHUB_KEY')}`,

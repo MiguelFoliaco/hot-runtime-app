@@ -6,6 +6,7 @@ import axios from "axios";
 import { PayloadBuild } from "./interfaces/payloadBuilds";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../../../database.types";
+import { config } from "../../../config/constants";
 
 export class ClientWebHookExpo {
 
@@ -42,7 +43,7 @@ export class ClientWebHookExpo {
         // headers.set('X-GitHub-Api-Version', '2022-11-28')
         try {
 
-            const request = await axios.post(`https://api.github.com/repos/MiguelFoliaco/hot-runtime/actions/workflows/${req.query.workflows_id}/dispatches`,
+            const request = await axios.post(`${config.gitHubUrl}/${config.ownerRepo}/${config.repo}/actions/workflows/${req.query.workflows_id as string}/dispatches`,
                 {
                     "ref": "main",
                     "inputs": {}
