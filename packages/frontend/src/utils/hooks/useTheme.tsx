@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { themePrimary, themeSecondary, threeecondary } from "../../themes/primary";
+import { androidTheme, begona, draculaTheme, excelTheme, iosTheme, Otono, themePrimary, themeSecondary, threeecondary } from "../../themes/primary";
 import { Theme } from "@mui/material";
 
-export type ThemeMap = 'primary' | 'secondary' | 'light' | 'BayronTheme'
-export const themeNames: ThemeMap[] = ['BayronTheme', 'light', 'primary', 'secondary']
+export type ThemeMap = 'primary' | 'secondary' | 'light' | 'BayronTheme' | 'begoña' | 'Otoño' | 'Dracula' | 'excel' | 'IOS'|'Android'
+export const themeNames: ThemeMap[] = ['BayronTheme', 'light', 'primary', 'secondary', 'begoña', 'Otoño', 'Dracula', 'excel', 'IOS', 'Android']
 type ThemeHook = {
     themeSelected: ThemeMap,
     themeList: Record<ThemeMap, Theme>
@@ -15,7 +15,13 @@ export const useThemeClient = create<ThemeHook>(set => ({
         light: themeSecondary,
         primary: themePrimary,
         secondary: themeSecondary,
-        BayronTheme: threeecondary
+        BayronTheme: threeecondary,
+        'begoña': begona,
+        'Otoño': Otono,
+        Dracula: draculaTheme,
+        excel: excelTheme,
+        IOS: iosTheme,
+        Android:androidTheme
     },
     setTheme: (theme: ThemeMap) => {
         localStorage.setItem('theme', theme)

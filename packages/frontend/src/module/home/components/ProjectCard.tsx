@@ -45,14 +45,14 @@ export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
                     <div onClick={copy}>
                         <Tooltip title='Copiar url de conexión'>
                             <IconButton size="small">
-                                <ContentCopy fontSize="small" htmlColor='white' />
+                                <ContentCopy fontSize="small" color='primary' />
                             </IconButton>
                         </Tooltip>
                     </div>
                 </Grid>
-                <Grid sx={{ width: '100%', height: '3px', bgcolor: 'success.main' }} />
+                <Grid sx={{ width: '100%', height: '3px', bgcolor: 'secondary.main' }} />
             </Grid>
-            <Grid item xs={6} sx={{ borderRight: '2px dashed #FFFFFF10', height: '65%', mt: 1, }}>
+            <Grid item xs={6} sx={{ borderRight: t => `2px dashed ${t.palette.text.primary}10`, height: '65%', mt: 1, }}>
                 <Typography variant='caption' sx={{ fontSize: 9, display: 'block', mb: 1 }}>
                     <strong>Description</strong>:   {(project?.description ?? '').length > 25 ? project?.description?.substring(0, 25)?.concat('...') : project?.description}
                 </Typography>

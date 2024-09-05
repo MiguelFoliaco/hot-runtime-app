@@ -99,15 +99,15 @@ export const VersionsStudio = () => {
 
     return (
         <Grid container sx={{ height: '100%', width: '100%' }}>
-            <Grid item xs={2} sx={{ width: '100%', bgcolor: '#1f1f1f', borderRadius: 2, p: 1 }}>
+            <Grid item xs={2} sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 2, p: 1 }}>
                 <Typography variant="overline">Versiones</Typography>
                 <Grid container>
                     {
                         keysVersions.map((e, i) => (
                             <Grid key={`item-key-${e}`}
                                 sx={{
-                                    borderTop: i == 0 ? '1px dashed #484848' : 'none',
-                                    borderBottom: '1px dashed #484848',
+                                    borderTop: i == 0 ? t => `1px dashed ${t.palette.text.primary}40` : 'none',
+                                    borderBottom: t => `1px dashed ${t.palette.text.primary}40`,
                                     width: '100%',
                                 }}
                             >
@@ -135,7 +135,7 @@ export const VersionsStudio = () => {
                     versionSelected &&
                     <Grid item xs={10} sx={{ px: 2, }} >
                         <Grid container>
-                            <Grid item xs={12} sx={{ width: '100%', height: '50px !important', bgcolor: '#1f1f1f', borderRadius: 2, p: 0.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Grid item xs={12} sx={{ width: '100%', height: '50px !important', bgcolor: 'background.paper', borderRadius: 2, p: 0.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Typography variant='overline'>Projecto: {projectSelected?.name}</Typography>
                                 {
                                     edit && <Typography sx={{ display: 'flex' }} variant="caption">Presione
@@ -143,9 +143,9 @@ export const VersionsStudio = () => {
                                             mx: 1, px: 2,
                                             transition: '200ms',
                                             cursor: 'pointer',
-                                            border: '1px solid #FFFFFF40 ', borderRadius: 1, fontWeight: 'bold', color: '#FFFFFF80', ':hover': {
-                                                bgcolor: '#00000050',
-                                                color: '#FFFFFF',
+                                            border: t => `1px solid ${t.palette.text}20`, borderRadius: 1, fontWeight: 'bold', color: 'text.primary', ':hover': {
+                                                bgcolor: 'background.paper',
+                                                color: 'text.primary',
                                                 transform: 'scale(0.95)'
                                             }
                                         }}
@@ -159,7 +159,7 @@ export const VersionsStudio = () => {
                                 <Typography variant='overline'>Author: {versionSelected?.publicate_by_email}</Typography>
                             </Grid>
                             <Grid item xs={12} sx={{ width: '100%', p: 0.5, my: 1, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                                <Grid sx={{ p: 1, mb: 0.5, bgcolor: '#1f1f1f', borderRadius: 2, width: 'fit-content', display: 'flex', alignItems: 'center' }}>
+                                <Grid sx={{ p: 1, mb: 0.5, bgcolor: 'background.paper', borderRadius: 2, width: 'fit-content', display: 'flex', alignItems: 'center' }}>
                                     {
                                         edit ?
 
@@ -184,7 +184,7 @@ export const VersionsStudio = () => {
                                             <Edit onClick={() => setEdit(true)} fontSize="small" color="warning" sx={{ ml: 2 }} />
                                     }
                                 </Grid>
-                                <Grid sx={{ p: 1, mb: 0.5, bgcolor: '#1f1f1f', borderRadius: 2, width: '320px', display: 'flex', alignItems: 'center' }}>
+                                <Grid sx={{ p: 1, mb: 0.5, bgcolor: 'background.paper', borderRadius: 2, width: '320px', display: 'flex', alignItems: 'center' }}>
                                     {
                                         edit ?
                                             <Select
@@ -212,7 +212,7 @@ export const VersionsStudio = () => {
                                             <Edit onClick={() => setEdit(true)} fontSize="small" color="warning" sx={{ ml: 2 }} />
                                     }
                                 </Grid>
-                                <Grid sx={{ p: 1, mb: 0.5, bgcolor: '#1f1f1f', borderRadius: 2, width: '320px', display: 'flex', alignItems: 'center' }}>
+                                <Grid sx={{ p: 1, mb: 0.5, bgcolor: 'background.paper', borderRadius: 2, width: '320px', display: 'flex', alignItems: 'center' }}>
                                     {
                                         edit ?
                                             <DateTimePicker

@@ -256,7 +256,7 @@ export const StudioWithOutMemo = () => {
                 </Grid>
             </Modal>
             <Grid container sx={{ height: '92vh', }} spacing={1}>
-                <Grid item xs={2} sx={{ width: '100%', bgcolor: '#1f1f1f', borderRadius: 1, p: 1 }}>
+                <Grid item xs={2} sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 1, p: 1, border: t => `1px solid ${t.palette.text.secondary}30` }}>
                     {
                         loadingComponent ?
                             <Skeleton variant="rectangular" height='90%' width={'90%'} sx={{ m: 'auto', mt: '15%', borderRadius: 1 }} />
@@ -266,7 +266,7 @@ export const StudioWithOutMemo = () => {
 
                                 <Grid
                                     sx={{
-                                        my: 2, transition: '200ms', borderTop: '1px dashed #FFFFFF30', borderBottom: '1px dashed #FFFFFF30', py: 1,
+                                        my: 2, transition: '200ms', borderTop: t => `1px dashed ${t.palette.text.secondary}30`, borderBottom: t => `1px dashed ${t.palette.text.secondary}30`, py: 1,
                                     }}>
                                     {
                                         components.map(e => (
@@ -286,9 +286,9 @@ export const StudioWithOutMemo = () => {
                                                     }
                                                 }}
                                             >
-                                                <Typography variant="overline" color={e.id === componentSelected?.id ? 'primary.main' : 'white'} key={`code-item-${e.id}`}>{e.name}</Typography>
+                                                <Typography variant="overline" color={e.id === componentSelected?.id ? 'primary.main' : 'text.primary'} key={`code-item-${e.id}`}>{e.name}</Typography>
                                                 {
-                                                    e.main_component  && <PhoneAndroid color='primary' fontSize="small" />
+                                                    e.main_component && <PhoneAndroid color='primary' fontSize="small" />
                                                 }
                                             </Grid>
                                         ))
@@ -299,13 +299,13 @@ export const StudioWithOutMemo = () => {
                     }
                 </Grid>
                 <Grid item container xs={10}>
-                    <Grid item xs={12} sx={{ p: 1, justifyContent: 'space-between', display: 'flex' }}>
+                    <Grid item xs={12} sx={{ p: 1, justifyContent: 'space-between', display: 'flex', }}>
                         <Typography variant='overline'>{project?.name}</Typography>
                         <Button onClick={() => navigate(`/workspace/versions?projectID=${project.id}`)} size='small'>{'Listado de versiones'}</Button>
                         <Button onClick={() => setOpenModalVersion(true)} size='small'>{'Generar Version'}</Button>
                         <Button onClick={() => setEditor(!editor)} size='small'>{editor ? 'Formulario' : 'Escribir codigo'}</Button>
                     </Grid>
-                    <Grid item xs={12} sx={{ p: 1 }}>
+                    <Grid item xs={12} sx={{ p: 1, }}>
                         {
                             editor ?
                                 <EditorJSX />
@@ -315,7 +315,7 @@ export const StudioWithOutMemo = () => {
                     </Grid>
                     <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2 }}>
                         <Console text={infoCompilation} />
-                        <Grid sx={{ transition: '200ms', width: '50%', height: '160px', borderRadius: 3, bgcolor: '#1f1f1f' }}>
+                        <Grid sx={{ transition: '200ms', width: '50%', height: '160px', borderRadius: 3, bgcolor: 'background.paper', border: t => `1px solid ${t.palette.text.secondary}30` }}>
 
                         </Grid>
                     </Grid>

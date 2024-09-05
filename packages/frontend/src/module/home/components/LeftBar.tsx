@@ -4,19 +4,18 @@ import imgLogo from '../../../assets/ICON.svg'
 import { Link } from '../../../layouts/components/Link'
 import { AndroidOutlined, ColorLens, ForkLeft, NotificationAddOutlined, Workspaces } from '@mui/icons-material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export const LeftBar = ({ open }: { open: boolean }) => {
     const theme = useTheme()
     const navigate = useNavigate()
-    const _location = useLocation()
     const keys = Object.keys(options) as [keyof typeof options]
 
     return (
         <Grid sx={{ height: '100%', bgcolor: 'background.main', px: 1 }}>
             {
                 keys.map((e, i) => (
-                    <Grid key={`item-menu-group-${e}`} sx={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', py: 1, border: (theme) => `2px solid ${theme.palette.text.secondary}`, borderTop: i === 0 ? 'inherit' : 'none', borderInline: 'none' }}>
+                    <Grid key={`item-menu-group-${e}`} sx={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', py: 1, border: (theme) => `2px solid ${theme.palette.text.secondary}30`, borderTop: i === 0 ? 'inherit' : 'none', borderInline: 'none' }}>
                         {
                             options[e].map(Item => (
                                 <Fragment key={`item-menu-group-${e}-item-${Item.path}`}>

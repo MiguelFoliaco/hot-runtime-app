@@ -1,8 +1,8 @@
-import { Button, CircularProgress, Grid, IconButton, MenuItem, Select, Tooltip, Typography } from "@mui/material"
+import { AlertColor, Button, CircularProgress, Grid, IconButton, LinearProgress, MenuItem, Select, Tooltip, Typography } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { Android, ContentCopy, Download, RemoveRedEye, Replay } from "@mui/icons-material"
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useMemo, useState } from "react"
 import { socket } from "../../services/socket.io"
 import { api } from "../builder/services/http"
 import { useAlert } from "../../layouts/components/AlertGlobal"
@@ -27,6 +27,7 @@ export const APKs = () => {
     const [statusProcessApk, setStatusProcessApk] = useState<Partial<Tables<'process'>>>({ status: 'on' })
     const { projects, setProjects, setProject, projectSelected } = useProject()
     const { builds, fillBuilds } = useAPKs()
+    const [isLoadindDownload, setIsLoadindDownload] = useState(false)
     const [openConsole, setOpenConsole] = useState(true)
     const [payloads, setPayloads] = useState<PayloadBuild[]>([])
     const [build, setBuild] = useState<FileObject>()
@@ -52,7 +53,7 @@ export const APKs = () => {
     }, [])
 
     const generateAPK = async () => {
-        if (statusProcessApk?.status==='on') {
+        if (statusProcessApk?.status === 'on') {
             return openAlert({ msg: 'Hay una generación en curso, por favor espere a que este termine para empezar uno nuevo', severity: 'warning' })
         }
         if (!projectSelected) {
@@ -91,6 +92,7 @@ export const APKs = () => {
 
     const downloadFile = async (e: FileObject) => {
         if (projectSelected) {
+            setIsLoadindDownload(true)
             const file = await supabaseClient.storage.from('apks').download(`debugs/${projectSelected.name}/${e.name}`)
             if (file.data) {
                 const url = window.URL.createObjectURL(file.data)
@@ -100,6 +102,7 @@ export const APKs = () => {
                     severity: 'info'
                 })
             }
+            setIsLoadindDownload(false)
         }
     }
     const getFiles = (value: string) => {
@@ -112,7 +115,65 @@ export const APKs = () => {
                     setIsLoading(false)
                 })
         }
+        else {
+            openAlert({
+                msg: 'Por favor seleccione un proyecto',
+                severity: 'info'
+            })
+        }
     }
+
+    // const [values, setValue] = useState<{ por: number, color: AlertColor }>({ por: 0.05, color: 'success' })
+    const values = useMemo(() => {
+        const totalValues = builds.reduce((a, b) => a + Number(b.metadata.size), 0)
+        const totalInMb = totalValues / 1000000
+        const gbInMb = 1000
+        const por = (totalInMb / gbInMb);
+        console.log(totalInMb, gbInMb)
+        if (por <= 0.5) {
+            return { color: 'success', por }
+        }
+        if (por > 0.5 && por <= 0.7) {
+            return { color: 'warning', por }
+        }
+        else {
+            return { color: 'error', por }
+        }
+
+    }, [builds])
+
+    // useEffect(() => {
+    //     let id: NodeJS.Timeout
+    //     console.log(values)
+    //     if (values.por >= 1) {
+    //         setValue({ por: 0, color: 'success' })
+    //     } else {
+    //         id = setInterval(() => {
+    //             setValue(state => {
+    //                 if (state.por > 1) {
+    //                     clearInterval(id)
+    //                     return { pos: 0, color: 'success' }
+    //                 }
+    //                 if (state.por <= 0.5) {
+    //                     return { color: 'success', por: state.por + 0.05 }
+    //                 }
+    //                 if (state.por > 0.5 && state.por <= 0.7) {
+    //                     return { color: 'warning', por: state.por + 0.05 }
+    //                 }
+    //                 else {
+    //                     return { color: 'error', por: state.por + 0.05 }
+    //                 }
+
+    //             })
+    //         }, 500)
+
+    //     }
+
+    //     return () => {
+    //         console.log('clear')
+    //         clearInterval(id)
+    //     }
+    // }, [])//! Demostración
     return (
         <LayoutBuilder
             listItemsLeft={LeftBar}
@@ -141,24 +202,29 @@ export const APKs = () => {
                         <Replay className={isLoading ? "rotation" : undefined} />
                     </IconButton>
                 </Grid>
-                <Grid item xs={12} sx={{ p: 1 }}>
-                    <Select size='small' sx={{ width: '30%' }} onChange={(e) => getFiles(e.target.value.toString())} value={projectSelected?.id ?? 0}>
-                        <MenuItem value={0}>
-                            Seleccione un projecto
-                        </MenuItem>
-                        {
-                            projects.map(e => (
-                                <MenuItem value={e.id} key={`item-menu-${e.id}`}>{e.name}</MenuItem>
-                            ))
-                        }
-                    </Select>
+                <Grid container item xs={12} sx={{ p: 1 }}>
+                    <Grid xs={4}>
+                        <Select size='small' sx={{ width: '100%' }} onChange={(e) => getFiles(e.target.value.toString())} value={projectSelected?.id ?? 0}>
+                            <MenuItem value={0}>
+                                Seleccione un projecto
+                            </MenuItem>
+                            {
+                                projects.map(e => (
+                                    <MenuItem value={e.id} key={`item-menu-${e.id}`}>{e.name}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </Grid>
+                    <Grid item xs={8} sx={{ display: 'flex', alignItems: 'center', height: '100%', width: '100%', justifyContent: 'flex-start', pl: 1 }}>
+                        <LinearProgress variant="determinate" color={values.color as AlertColor} value={values.por * 100} sx={{ width: '50%' }} /><Typography fontSize={'10px'} sx={{ ml: 1 }}>({(values.por * 100).toFixed(2)}%) de 1gb de espacio</Typography>
+                    </Grid>
                 </Grid>
                 {
                     builds.length === 0 ?
                         <Grid item xs={12} sx={{ flexDirection: 'column', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Typography>Aun no nada aquí</Typography>
                             <Button
-                                disabled={statusProcessApk?.status==='on'}
+                                disabled={statusProcessApk?.status === 'on'}
                                 onClick={generateAPK}
                                 sx={{ mt: 1 }} color='secondary'
                                 endIcon={<Android />}
@@ -169,11 +235,12 @@ export const APKs = () => {
                             <Grid item xs={build ? 8 : 12} sx={{ flexDirection: 'column', height: '80%', transition: '200ms' }}>
                                 {
                                     builds.map(e => (
-                                        <Grid container key={`build-list-item-${e.id}`} sx={{ bgcolor: '#090909', border: '1px solid #1f1f1f', p: 0.5, px: 1, mb: 2, borderRadius: 1 }}>
+                                        <Grid container key={`build-list-item-${e.id}`} sx={{ bgcolor: 'background.paper', border:  t => `1px solid ${t.palette.text.secondary}30`, p: 0.5, px: 1, mb: 2, borderRadius: 1 }}>
                                             <Grid item xs={10} sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                                                 {/* <Android fontSize="small" htmlColor={getColor(JSON.parse(e.payload_str).status)} /> */}
-                                                <Typography fontSize={'15px'} sx={{ color: '#d5d5d5', mx: 2 }}>File Name: {e.name}</Typography>
-                                                <Typography fontSize={'15px'} sx={{ color: '#d5d5d5', ml: 2, display: 'inline-block' }}>Hash: {e.owner}</Typography>
+                                                <Typography fontSize={'15px'} sx={{ color: 'text.secondary', mx: 2 }}>File Name: {e.name}</Typography>
+                                                <Typography fontSize={'15px'} sx={{ color: 'text.secondary', ml: 2, display: 'inline-block' }}>Size: {((e.metadata?.size) / 1000000).toFixed(1)}mb</Typography>
+                                                <Typography fontSize={'15px'} sx={{ color: 'text.secondary', ml: 2, display: 'inline-block' }}>Id: {e.owner}</Typography>
                                                 <IconButton
                                                     onClick={async () => {
                                                         try {
@@ -192,15 +259,19 @@ export const APKs = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <ContentCopy htmlColor="#d5d5d5" />
+                                                    <ContentCopy htmlColor="text.secondary" />
                                                 </IconButton>
-                                                <Typography fontSize={'15px'} sx={{ color: '#d5d5d5', mx: 2, display: 'inline-block' }}>Creado el: {moment(e.created_at).format('YYYY-MM-DD HH:mm:ss a')}</Typography>
+                                                <Typography fontSize={'15px'} sx={{ color: 'text.secondary', mx: 2, display: 'inline-block' }}>Creado el: {moment(e.created_at).format('YYYY-MM-DD HH:mm:ss a')}</Typography>
                                             </Grid>
                                             <Grid item xs={1}>
                                                 {
                                                     // JSON.parse(e)?.status === 'finished' &&
-                                                    <IconButton onClick={() => downloadFile(e)}>
-                                                        <Download color='secondary' />
+                                                    <IconButton disabled={isLoadindDownload} onClick={() => downloadFile(e)}>
+                                                        {
+                                                            isLoadindDownload ? <Replay className="rotation" />
+                                                                :
+                                                                <Download color='secondary' />
+                                                        }
                                                     </IconButton>
                                                 }
                                             </Grid>
@@ -217,10 +288,10 @@ export const APKs = () => {
                                     ))
                                 }
                                 <Button
-                                    disabled={statusProcessApk?.status==='on'}
+                                    disabled={statusProcessApk?.status === 'on'}
                                     onClick={generateAPK}
                                     sx={{ position: 'absolute', bottom: 10, right: 10 }} color='secondary'
-                                    endIcon={(statusProcessApk?.status==='on') ? <CircularProgress size='20px' /> : <Android />}
+                                    endIcon={(statusProcessApk?.status === 'on') ? <CircularProgress size='20px' /> : <Android />}
                                 >Compilar una version</Button>
                             </Grid>
                             <Grid item xs={build ? 4 : 0} className="scroll" sx={{ opacity: build ? 1 : 0, transition: '200ms', height: '500px', width: build ? undefined : '0px', overflowX: 'scroll', overflowY: 'scroll', }}>

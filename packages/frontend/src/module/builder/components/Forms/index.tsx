@@ -88,7 +88,7 @@ export const Form = ({ setInfoCompilation }: props) => {
     }
 
     return (
-        <Grid sx={{ width: '100%', height: '350px', bgcolor: '#1f1f1f', borderRadius: 2, p: 2 }}>
+        <Grid sx={{ width: '100%', height: '350px', bgcolor: 'background.paper', borderRadius: 2, p: 2, border: t => `1px solid ${t.palette.text.secondary}30` }}>
             <Grid sx={{ width: '50%', margin: 'auto' }}>
                 {
                     formSchema ?
