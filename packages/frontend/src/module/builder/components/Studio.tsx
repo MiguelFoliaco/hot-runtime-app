@@ -17,9 +17,31 @@ import { useAlert } from "../../../layouts/components/AlertGlobal"
 import { Console } from "./Console"
 import { useNavigate } from "react-router-dom"
 import { Form } from "./Forms"
+import { Preview } from "./Previews"
 
 
 let render = 0;
+const initialComponent: Tables<'components'> = {
+    code: '',
+    props: '{}',
+    codeJSX: `// No import react o react native, use RN.Component, React.useState or useState
+
+const ComponentName=()=>{
+  return <RN.Text>Hola mundo</RN.Text>
+}`,
+    componentParent: null,
+    componentParentLeft: null,
+    componentParentRight: null,
+    componentsChildren: null,
+    created_at: new Date().toISOString(),
+    id: 0,
+    name: '',
+    owner: '',
+    projectHostory: '',
+    projectid: 0,
+    public: false,
+    main_component: false
+}
 
 
 const getComponent = async (setComponents: (data: Tables<'components'>[]) => void, projectId: number) => {
@@ -294,7 +316,11 @@ export const StudioWithOutMemo = () => {
                                         ))
                                     }
                                 </Grid>
-                                <Button size='small' fullWidth>Crear</Button>
+                                <Button size='small' fullWidth
+                                    onClick={() => {
+                                        setComponent(initialComponent)
+                                    }}
+                                >Crear</Button>
                             </>
                     }
                 </Grid>
@@ -315,9 +341,7 @@ export const StudioWithOutMemo = () => {
                     </Grid>
                     <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2 }}>
                         <Console text={infoCompilation} />
-                        <Grid sx={{ transition: '200ms', width: '50%', height: '160px', borderRadius: 3, bgcolor: 'background.paper', border: t => `1px solid ${t.palette.text.secondary}30` }}>
-
-                        </Grid>
+                        <Preview />
                     </Grid>
                 </Grid>
             </Grid>

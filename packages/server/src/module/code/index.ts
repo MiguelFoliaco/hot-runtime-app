@@ -9,6 +9,7 @@ const routeCode = Router()
 const service = new CodeServices(client)
 const controllerCode = new CodeController(service)
 
+routeCode.post('/compile', verifySession, controllerCode.compileJSX)
 routeCode.post('/generate-code', verifySession, verifyGenerateVersion, controllerCode.generateVersion)
 routeCode.get('/version', controllerCode.getVersionByProjectId)
 

@@ -30,4 +30,10 @@ export class CodeController {
         }
         return res.send(template(app))
     }
+
+    compileJSX: IHandler = async (req, res) => {
+        const jsx = req.body.jsx;
+        const js = await this.server.compile(jsx);
+        return res.json(js)
+    }
 }

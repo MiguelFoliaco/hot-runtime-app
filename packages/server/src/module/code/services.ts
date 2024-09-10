@@ -49,4 +49,14 @@ export class CodeServices {
             ascending: false
         })
     }
+
+    compile = async (codeJSX: string) => {
+        const codebuild = await esbuild.transform(codeJSX, {
+            jsx: 'transform',
+            loader: 'tsx',
+            minify: true
+        });
+
+        return codebuild;
+    }
 }

@@ -18,6 +18,7 @@ import { Ace } from "ace-builds";
 
 const initialComponent: Tables<'components'> = {
     code: '',
+    props:'{}',
     codeJSX: `// No import react o react native, use RN.Component, React.useState or useState
 
 const ComponentName=()=>{
@@ -185,9 +186,6 @@ export const EditorJSX = () => {
         }
         setLoadingComponent(false)
     }
-
-
-
 
     return (
         <Grid

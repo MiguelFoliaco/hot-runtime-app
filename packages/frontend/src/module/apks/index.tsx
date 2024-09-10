@@ -1,8 +1,8 @@
-import { AlertColor, Button, CircularProgress, Grid, IconButton, LinearProgress, MenuItem, Select, Tooltip, Typography } from "@mui/material"
+import { Button, CircularProgress, Grid, IconButton, MenuItem, Select, Tooltip, Typography } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { Android, ContentCopy, Download, RemoveRedEye, Replay } from "@mui/icons-material"
-import { Fragment, useEffect, useMemo, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { socket } from "../../services/socket.io"
 import { api } from "../builder/services/http"
 import { useAlert } from "../../layouts/components/AlertGlobal"
@@ -28,7 +28,7 @@ export const APKs = () => {
     const { projects, setProjects, setProject, projectSelected } = useProject()
     const { builds, fillBuilds } = useAPKs()
     const [isLoadindDownload, setIsLoadindDownload] = useState(false)
-    const [openConsole, setOpenConsole] = useState(true)
+    const [openConsole, setOpenConsole] = useState(false)
     const [payloads, setPayloads] = useState<PayloadBuild[]>([])
     const [build, setBuild] = useState<FileObject>()
     const { openAlert } = useAlert()
@@ -59,10 +59,11 @@ export const APKs = () => {
         if (!projectSelected) {
             return openAlert({ msg: 'Por favor seleccione un proyecto', severity: 'warning' })
         }
+        setOpenConsole(true)
         api.method = 'post'
         const data = await api.rest<{ error: boolean, msg: string }>(`/github/generate-apk?workflows_id=${config.workflowGenerateApkId}&project_id=${projectSelected?.id}`, {
             headers: {
-                Authorization: `Bearer ${session?.access_token}`
+                authorization: `Bearer ${session?.access_token}`
             }
         })
         console.log("Data ", data)
@@ -124,23 +125,6 @@ export const APKs = () => {
     }
 
     // const [values, setValue] = useState<{ por: number, color: AlertColor }>({ por: 0.05, color: 'success' })
-    const values = useMemo(() => {
-        const totalValues = builds.reduce((a, b) => a + Number(b.metadata.size), 0)
-        const totalInMb = totalValues / 1000000
-        const gbInMb = 1000
-        const por = (totalInMb / gbInMb);
-        console.log(totalInMb, gbInMb)
-        if (por <= 0.5) {
-            return { color: 'success', por }
-        }
-        if (por > 0.5 && por <= 0.7) {
-            return { color: 'warning', por }
-        }
-        else {
-            return { color: 'error', por }
-        }
-
-    }, [builds])
 
     // useEffect(() => {
     //     let id: NodeJS.Timeout
@@ -215,9 +199,6 @@ export const APKs = () => {
                             }
                         </Select>
                     </Grid>
-                    <Grid item xs={8} sx={{ display: 'flex', alignItems: 'center', height: '100%', width: '100%', justifyContent: 'flex-start', pl: 1 }}>
-                        <LinearProgress variant="determinate" color={values.color as AlertColor} value={values.por * 100} sx={{ width: '50%' }} /><Typography fontSize={'10px'} sx={{ ml: 1 }}>({(values.por * 100).toFixed(2)}%) de 1gb de espacio</Typography>
-                    </Grid>
                 </Grid>
                 {
                     builds.length === 0 ?
@@ -235,7 +216,7 @@ export const APKs = () => {
                             <Grid item xs={build ? 8 : 12} sx={{ flexDirection: 'column', height: '80%', transition: '200ms' }}>
                                 {
                                     builds.map(e => (
-                                        <Grid container key={`build-list-item-${e.id}`} sx={{ bgcolor: 'background.paper', border:  t => `1px solid ${t.palette.text.secondary}30`, p: 0.5, px: 1, mb: 2, borderRadius: 1 }}>
+                                        <Grid container key={`build-list-item-${e.id}`} sx={{ bgcolor: 'background.paper', border: t => `1px solid ${t.palette.text.secondary}30`, p: 0.5, px: 1, mb: 2, borderRadius: 1 }}>
                                             <Grid item xs={10} sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                                                 {/* <Android fontSize="small" htmlColor={getColor(JSON.parse(e.payload_str).status)} /> */}
                                                 <Typography fontSize={'15px'} sx={{ color: 'text.secondary', mx: 2 }}>File Name: {e.name}</Typography>
