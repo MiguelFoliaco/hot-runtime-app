@@ -12,6 +12,7 @@ import { Versions } from "./builder/versions";
 import { APKs } from "./apks";
 import { Config } from "./config/Config";
 import { ThemeConfigModule } from "./config/theme";
+import { CLI } from "./develop/cli";
 
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
@@ -105,6 +106,12 @@ export const route = createBrowserRouter([
                 element: <ThemeConfigModule />
             }
         ]
+    },
+    {
+        path: '/cli',
+        element: <SessionValidation>
+            <CLI />
+        </SessionValidation>
     },
     {
         path: '/*',

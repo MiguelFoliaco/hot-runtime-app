@@ -9,6 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      actions: {
+        Row: {
+          code: string
+          created_at: string
+          description: string
+          id: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description: string
+          id?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string
+          id?: number
+        }
+        Relationships: []
+      }
       builds: {
         Row: {
           build_url: string
@@ -236,6 +257,33 @@ export type Database = {
           },
         ]
       }
+      rols: {
+        Row: {
+          actions: number[]
+          created_at: string
+          description: string | null
+          id: number
+          status: boolean
+          title: string
+        }
+        Insert: {
+          actions: number[]
+          created_at?: string
+          description?: string | null
+          id?: number
+          status?: boolean
+          title?: string
+        }
+        Update: {
+          actions?: number[]
+          created_at?: string
+          description?: string | null
+          id?: number
+          status?: boolean
+          title?: string
+        }
+        Relationships: []
+      }
       targets: {
         Row: {
           color: string | null
@@ -256,6 +304,44 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      tokens_dev: {
+        Row: {
+          assing_by: string
+          create_by: string
+          created_at: string
+          id: number
+          show: boolean
+          title: string
+          token: string
+        }
+        Insert: {
+          assing_by: string
+          create_by: string
+          created_at?: string
+          id?: number
+          show?: boolean
+          title?: string
+          token?: string
+        }
+        Update: {
+          assing_by?: string
+          create_by?: string
+          created_at?: string
+          id?: number
+          show?: boolean
+          title?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tokens_dev_create_by_fkey"
+            columns: ["create_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
