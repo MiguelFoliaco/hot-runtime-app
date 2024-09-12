@@ -3,13 +3,15 @@ import { LayoutBuilder } from '../../layouts/builders'
 import { LeftBar } from '../home/components/LeftBar'
 import { useEffect, useMemo, useState } from 'react'
 import { useRols } from '../auth/context/rol.context'
-import { Refresh } from '@mui/icons-material'
+import { ContentCopy, Refresh } from '@mui/icons-material'
 import { Tables } from '../../database.types'
 import { ModalActions } from '../auth/components/modalActions'
 import { supabaseClient } from '../../data/supabase'
 import { api } from '../builder/services/http'
 import { PostgrestError, User } from '@supabase/supabase-js'
 import { useAlert } from '../../layouts/components/AlertGlobal'
+import { useUser } from '../auth/context/user.context'
+import { ListTokens } from '../auth/components/Tokens'
 
 
 const setRol = async (rol: Tables<"rols">) => {
@@ -20,11 +22,15 @@ const setRol = async (rol: Tables<"rols">) => {
 
 export const CLI = () => {
     const openAlert = useAlert(state => state.openAlert)
+    const { values: { session } } = useUser()
     const { rols, fill, actions, loading } = useRols()
     const [showForm, setShowForm] = useState(false)
     const [time, setTime] = useState<null | number | string>(null)
     const [rolSelected, setRolSelected] = useState<Tables<'rols'>>()
     const [openModal, setOpenModal] = useState(false)
+    const [tokenGenerate, setTokenGenerate] = useState('')
+    const [title, setTitle] = useState('')
+
     useEffect(() => {
         if (rols.length === 0 && actions.length === 0) {
             fill()
@@ -39,6 +45,55 @@ export const CLI = () => {
         return []
     }, [rols, rolSelected, actions])
 
+    const copy = async () => {
+        await navigator.clipboard.writeText(tokenGenerate)
+        openAlert({
+            msg: 'Key copiada con exitio',
+            severity: 'success'
+        })
+    }
+
+    const generateTokenFn = async () => {
+        const user = session?.user
+        if (!rolSelected) {
+            openAlert({
+                msg: 'Por favor seleccione un rol',
+                severity: 'warning'
+            })
+        }
+        if (time === null) {
+            openAlert({
+                msg: 'Por favor seleccione un tiempo de expiración',
+                severity: 'warning'
+            })
+        }
+        if (user && rolSelected) {
+            await generateToken({
+                user: user,
+                rol: rolSelected,
+                timeExpire: 1000,
+                title,
+            }, session.access_token).then(e => {
+                if (e.token) {
+                    setTokenGenerate(e.token)
+                    openAlert({
+                        msg: 'Token generado con exito',
+                        severity: 'success'
+                    })
+                    setTime(null)
+                    setShowForm(false)
+                    setRolSelected(undefined)
+                    setTitle('')
+                } else {
+                    openAlert({
+                        msg: `[Error] ${e.message}`,
+                        severity: 'error'
+                    })
+                }
+            })
+
+        }
+    }
 
     return (
         <LayoutBuilder
@@ -48,10 +103,7 @@ export const CLI = () => {
                 <Grid sx={{ transition: '200ms', width: showForm ? '50%' : '100%' }}>
                     <Typography sx={{ my: 1 }} variant='overline'>Configuración para el CLI</Typography>
                     <Grid container>
-                        <Grid item xs={12} sx={{ my: 1, mb: 2, border: t => `1px solid ${t.palette.text.secondary}50`, borderRadius: '3px', padding: '10px' }}>
-                            <Typography variant='body2' color='text.secondary'>Aun no tienes claves generadas, aqui se listaran la claves que hayas generado</Typography>
-                        </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={4} sx={{ my: 1 }}>
                             <Button
                                 disabled={loading}
                                 endIcon={loading && <CircularProgress size='20px' />}
@@ -74,39 +126,23 @@ export const CLI = () => {
                                 disabled={!rolSelected}
                                 sx={{ my: 1 }}
                                 endIcon={loading && <CircularProgress size='20px' />}
-                                onClick={async () => {
-                                    const user = await supabaseClient.auth.getUser()
-                                    if (!rolSelected) {
-                                        openAlert({
-                                            msg: 'Por favor seleccione un rol',
-                                            severity: 'warning'
-                                        })
-                                    }
-                                    if (time === null) {
-                                        openAlert({
-                                            msg: 'Por favor seleccione un tiempo de expiración',
-                                            severity: 'warning'
-                                        })
-                                    }
-                                    if (user.data.user && rolSelected) {
-                                        generateToken({
-                                            user: user.data.user,
-                                            rol: rolSelected,
-                                            timeExpire: 1000
-                                        }).finally(e=>{
-                                            if(typeof e==="string"){
-                                                //mostrar el token
-                                            }
-                                        })
-                                    }
-                                }} size='small' variant='outlined'>generar token</Button>
+                                onClick={generateTokenFn} size='small' variant='outlined'>generar token</Button>
+                        </Grid>
+                        {
+                            tokenGenerate &&
+                            <Grid item xs={12} sx={{ my: 1, mb: 2, border: t => `1px solid ${t.palette.text.secondary}50`, borderRadius: '3px', padding: '10px' }}>
+                                <Typography sx={{ display: 'flex', alignItems: 'center', color: t => `${t.palette.text.secondary}80` }} variant='body2'>{tokenGenerate.substring(0, 75) + '...'} <ContentCopy onClick={copy} sx={{ ml: 1, color: t => `${t.palette.text.secondary}80`, ':hover': { color: 'primary.main' }, cursor: 'pointer', transition: '200ms', mr: 2 }} />Asegure el token ya que no se volvera a mostrar</Typography>
+                            </Grid>
+                        }
+                        <Grid item xs={12} sx={{ my: 1, mb: 2, border: t => `1px solid ${t.palette.text.secondary}50`, borderRadius: '3px', padding: '10px' }}>
+                            <ListTokens />
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid sx={{ transition: '200ms', width: showForm ? '50%' : '0', p: 2, pt: 5, overflow: 'hidden', }}>
                     {
                         showForm && <>
-                            <TextField fullWidth size='small' label='Descripcion del token' />
+                            <TextField fullWidth size='small' label='Descripcion del token' value={title} onChange={(e) => setTitle(e.target.value)} />
                             <Grid container sx={{ width: '100%', alignItems: 'center', display: 'flex', my: 2 }}>
                                 <FormControl sx={{ mt: 1, width: '90%' }}>
                                     <InputLabel color='secondary' size='small' id='rol-label'>Rol</InputLabel>
@@ -131,8 +167,8 @@ export const CLI = () => {
                                         }
                                     </Select>
                                 </FormControl>
-                                <IconButton size='small' sx={{ mt: 1, ml: 1 }} onClick={() => fill()}>
-                                    <Refresh className={loading ? 'rotation' : undefined} />
+                                <IconButton className={loading ? 'rotation' : undefined} size='small' sx={{ mt: 1, ml: 1 }} onClick={() => fill()}>
+                                    <Refresh />
                                 </IconButton>
                             </Grid>
                             <Grid sx={{ border: t => `1px solid ${t.palette.text.secondary}50`, p: 1, borderRadius: 1, minHeight: '400px' }}>
@@ -167,9 +203,13 @@ export const CLI = () => {
 }
 
 
-const generateToken = async (payload: { user: User, rol: Tables<'rols'>, timeExpire: number }) => {
+const generateToken = async (payload: { user: User, rol: Tables<'rols'>, timeExpire: number, title: string }, token: string): Promise<{ token: string } & PostgrestError> => {
     api.method = 'post'
     api.bodyInit = payload
-    const response = await api.rest('/generateToken')
-    return response as string | PostgrestError
+    const response = await api.rest<{ token: string } & PostgrestError>('/generateToken', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    return response
 }

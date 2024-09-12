@@ -13,6 +13,8 @@ export class CodeController {
         return res.json(data)
     }
 
+    generateVersionDevelop = () => { }
+
     getVersionByProjectId: IHandler = async (req, res) => {
         const { projectId, os_id, all } = req.query
         if (!projectId) return res.json({ error: { message: 'No se ha proporcionado un projecto para generar la version' }, data: null })

@@ -9,6 +9,6 @@ export class AuthController {
     generateToken: IHandler = async (req, res) => {
         const body = req.body as generateTokenPayload
         const data = await this.service.generateToken(body);
-        return res.json(data)
+        return res.json(typeof data === "string" ? { token: data } : { token: null, ...data })
     }
 }

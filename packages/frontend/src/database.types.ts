@@ -313,7 +313,6 @@ export type Database = {
           id: number
           show: boolean
           title: string
-          token: string
         }
         Insert: {
           assing_by: string
@@ -322,7 +321,6 @@ export type Database = {
           id?: number
           show?: boolean
           title?: string
-          token?: string
         }
         Update: {
           assing_by?: string
@@ -331,7 +329,6 @@ export type Database = {
           id?: number
           show?: boolean
           title?: string
-          token?: string
         }
         Relationships: [
           {
