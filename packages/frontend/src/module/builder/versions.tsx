@@ -42,7 +42,6 @@ const getVersions = async (setData: (data: Tables<'version-code'>[]) => void, pr
         }
     }
     const promisesResolve = await Promise.all(promises)
-    console.log(promisesResolve)
     setData(promisesResolve.filter(e => e !== null))
 }
 

@@ -68,10 +68,11 @@ export const CLI = () => {
             })
         }
         if (user && rolSelected) {
+            setTokenGenerate('')
             await generateToken({
                 user: user,
                 rol: rolSelected,
-                timeExpire: 1000,
+                timeExpire: time,
                 title,
             }, session.access_token).then(e => {
                 if (e.token) {
@@ -115,9 +116,9 @@ export const CLI = () => {
                         <Grid item xs={8}>
                             <Grid>
                                 <ButtonGroup size='small'>
-                                    <Button variant={time === '1d' ? 'contained' : 'outlined'} onClick={() => setTime('1d')}>24Hr</Button>
-                                    <Button variant={time === '15d' ? 'contained' : 'outlined'} onClick={() => setTime('15d')}>15d</Button>
-                                    <Button variant={time === '30d' ? 'contained' : 'outlined'} onClick={() => setTime('30d')}>30d</Button>
+                                    <Button variant={time === '1 days' ? 'contained' : 'outlined'} onClick={() => setTime('1 days')}>24Hr</Button>
+                                    <Button variant={time === '15 days' ? 'contained' : 'outlined'} onClick={() => setTime('15 days')}>15d</Button>
+                                    <Button variant={time === '30 days' ? 'contained' : 'outlined'} onClick={() => setTime('30 days')}>30d</Button>
                                     <Button variant={time === 0 ? 'contained' : 'outlined'} onClick={() => setTime(0)}>Without Expired</Button>
                                 </ButtonGroup>
                             </Grid>
@@ -130,10 +131,11 @@ export const CLI = () => {
                         </Grid>
                         {
                             tokenGenerate &&
-                            <Grid item xs={12} sx={{ my: 1, mb: 2, border: t => `1px solid ${t.palette.text.secondary}50`, borderRadius: '3px', padding: '10px' }}>
-                                <Typography sx={{ display: 'flex', alignItems: 'center', color: t => `${t.palette.text.secondary}80` }} variant='body2'>{tokenGenerate.substring(0, 75) + '...'} <ContentCopy onClick={copy} sx={{ ml: 1, color: t => `${t.palette.text.secondary}80`, ':hover': { color: 'primary.main' }, cursor: 'pointer', transition: '200ms', mr: 2 }} />Asegure el token ya que no se volvera a mostrar</Typography>
+                            <Grid item xs={12} sx={{ maxHeight: '100px', my: 1, mb: 1, border: t => `1px solid ${t.palette.text.secondary}50`, borderRadius: '3px', padding: '10px' }}>
+                                <Typography sx={{ display: 'flex', alignItems: 'center', color: t => `${t.palette.text.secondary}80` }} variant='body2'>{tokenGenerate.substring(0, 75) + '...'} <ContentCopy onClick={copy} sx={{ ml: 1, color: t => `${t.palette.text.secondary}80`, ':hover': { color: 'primary.main' }, cursor: 'pointer', transition: '200ms', mr: 2 }} />{!showForm && 'Asegure el token ya que no se volvera a mostrar'}</Typography>
                             </Grid>
                         }
+
                         <Grid item xs={12} sx={{ my: 1, mb: 2, border: t => `1px solid ${t.palette.text.secondary}50`, borderRadius: '3px', padding: '10px' }}>
                             <ListTokens />
                         </Grid>
@@ -203,7 +205,7 @@ export const CLI = () => {
 }
 
 
-const generateToken = async (payload: { user: User, rol: Tables<'rols'>, timeExpire: number, title: string }, token: string): Promise<{ token: string } & PostgrestError> => {
+const generateToken = async (payload: { user: User, rol: Tables<'rols'>, timeExpire: number | string | undefined, title: string }, token: string): Promise<{ token: string } & PostgrestError> => {
     api.method = 'post'
     api.bodyInit = payload
     const response = await api.rest<{ token: string } & PostgrestError>('/generateToken', {

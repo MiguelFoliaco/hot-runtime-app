@@ -25,11 +25,21 @@ export class AuthServices {
                 username: payload.user.email,
                 tokenID: token_save.data[0].id || 'non-id'
             }, env('JWT_KEY_CLIENT_generate') || 'secret-mi-perro', {
-                expiresIn: payload.timeExpire === 0 ? undefined : payload.timeExpire
+                expiresIn: payload.timeExpire === 0 ? undefined : payload.timeExpire,
             })
             return token;
         }
         return token_save.error
+    }
+
+
+    login = async ({ password, email }: { email: string, password: string }) => {
+        const sign = await this.client.auth.signInWithPassword({
+            email,
+            password,
+        })
+
+        return sign;
     }
 
 }

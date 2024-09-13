@@ -34,7 +34,6 @@ export class CodeServices {
             return requestInsert
         }
         catch (err) {
-            type err = { msg: string }
             return {
                 count: 0,
                 data: null,

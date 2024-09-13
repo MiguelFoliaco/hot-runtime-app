@@ -36,6 +36,7 @@ export const ListTokens = () => {
                     severity: 'error'
                 })
             }
+            getTokens(setTokens, session.user.id)
             return openAlert({
                 msg: 'El token se elimino correctamente',
                 severity: 'success'

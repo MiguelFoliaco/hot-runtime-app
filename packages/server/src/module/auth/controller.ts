@@ -11,4 +11,8 @@ export class AuthController {
         const data = await this.service.generateToken(body);
         return res.json(typeof data === "string" ? { token: data } : { token: null, ...data })
     }
+
+    login: IHandler = async (req, res) => {
+        return res.json(await this.service.login(req.body))
+    }
 }

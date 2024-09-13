@@ -4,6 +4,8 @@ import ngrok from '@ngrok/ngrok'
 import { routes } from '../module'
 import { Server } from 'socket.io'
 import { createServer } from 'http'
+import session from 'express-session'
+import { env } from '../utils'
 
 
 export class WWW {
@@ -16,6 +18,18 @@ export class WWW {
         }
     })
     constructor() {
+        if (this.app.get('env') === 'production') {
+            this.app.set('trust proxy', 1)
+        }
+        this.app.use(session({
+            secret: env('SESSION_KEY') || 'secret.key',
+            resave: false,
+            saveUninitialized: true,
+            cookie: {
+                secure: true,
+                httpOnly: true,
+            }
+        }))
         this.app.use(cors({ origin: '*' }))
         this.app.use(express.json())
         this.app.use(express.urlencoded({ extended: true }))
@@ -24,6 +38,10 @@ export class WWW {
     }
 
     private routes() {
+        this.app.all('/*', (req, res, next) => {
+            console.log(req.originalUrl)
+            next()
+        })
         this.app.use('/api', routes)
     }
 
