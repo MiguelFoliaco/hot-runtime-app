@@ -16,3 +16,16 @@ export const verifyCompile = (req: Request, res: Response, next: NextFunction) =
     }
     return next()
 }
+
+export const verifyPushComponents = (req: Request, res: Response, next: NextFunction) => {
+    const body = req.body?.components
+    if (body instanceof Array && req.body.projectId) {
+        return next()
+    }
+    return res.json({
+        data: null,
+        error: {
+            message: "Payload type invalid"
+        },
+    })
+}

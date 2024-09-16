@@ -16,7 +16,7 @@ export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
     const linkTo = useNavigate()
 
     const copy = async () => {
-        const url = `http://192.168.1.2:3000/api/version?projectId=${project.id}&os_id=seleccione_uno`
+        const url = `http://192.168.1.12:3000/api/version?projectId=${project.id}&os_id=seleccione_uno`
         await navigator.clipboard.writeText(url)
         openAlert({
             msg: 'La url se a copiado exitosamente',

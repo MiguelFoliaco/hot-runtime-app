@@ -13,7 +13,7 @@ export class CodeServices {
                 error: codeRequest.error
             };
             const codes = codeRequest.data.map(e => e.codeJSX);
-            const codesUnion = codes.join('\n');
+            const codesUnion = codes.join('\n').replaceAll('export const', 'const');
             const codebuild = await esbuild.transform(codesUnion, {
                 jsx: 'transform',
                 loader: 'tsx',
@@ -57,5 +57,23 @@ export class CodeServices {
         });
 
         return codebuild;
+    }
+
+    createComponents = async (data: Tables<'components'>[], projectId: number) => {
+
+        const components = await this.client.from('components').select().in('name', data.map(e => e.name)).eq('projectid', projectId)
+        if (components.error === null) {
+            //Update components
+            const responses = data.map(e => {
+                const item = components.data.find(el => el.name === e.name);
+                if (item) {
+                    return this.client.from('components').update({ ...e }).eq('id', item.id)
+                }
+                return this.client.from('components').insert(e)
+            })
+
+            return await Promise.all(responses)
+        }
+        return components.error
     }
 }

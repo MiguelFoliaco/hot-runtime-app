@@ -128,6 +128,7 @@ export type Database = {
           projectid: number | null
           props: string
           public: boolean
+          type: Database["public"]["Enums"]["type_component"]
         }
         Insert: {
           code: string
@@ -145,6 +146,7 @@ export type Database = {
           projectid?: number | null
           props?: string
           public?: boolean
+          type?: Database["public"]["Enums"]["type_component"]
         }
         Update: {
           code?: string
@@ -162,6 +164,7 @@ export type Database = {
           projectid?: number | null
           props?: string
           public?: boolean
+          type?: Database["public"]["Enums"]["type_component"]
         }
         Relationships: [
           {
@@ -442,7 +445,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      type_component: "component" | "function" | "hooks"
     }
     CompositeTypes: {
       [_ in never]: never

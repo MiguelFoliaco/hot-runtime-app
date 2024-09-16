@@ -18,15 +18,16 @@ export class AuthServices {
             title: payload.title,
             create_by: payload.user.id
         }).select('*')
+        const config = payload.timeExpire === 0 ? {} : {
+            expiresIn: payload.timeExpire,
+        }
         if (token_save.data) {
             const token = sign({
                 actions: actions.data.map(e => e.code),
                 userId: payload.user.id,
                 username: payload.user.email,
                 tokenID: token_save.data[0].id || 'non-id'
-            }, env('JWT_KEY_CLIENT_generate') || 'secret-mi-perro', {
-                expiresIn: payload.timeExpire === 0 ? undefined : payload.timeExpire,
-            })
+            }, env('JWT_KEY_CLIENT_generate') || 'secret-mi-perro',config)
             return token;
         }
         return token_save.error

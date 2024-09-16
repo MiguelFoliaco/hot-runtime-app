@@ -65,4 +65,10 @@ export class CodeController {
         const js = await this.server.compile(jsx);
         return res.json(js)
     }
+
+    createComponents: IHandler = async (req, res) => {
+        const { components, projectId } = req.body as { components: Tables<'components'>[], projectId: number }
+        const data = await this.server.createComponents(components, projectId)
+        return res.json({ msg: 'Holas', ...data })
+    }
 }

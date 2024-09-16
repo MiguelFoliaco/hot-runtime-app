@@ -1,4 +1,4 @@
-import { Alert, AlertColor, Button, Checkbox, CircularProgress, FormControlLabel, Grid, IconButton, Snackbar, TextField, Typography, useTheme } from "@mui/material"
+import { Alert, AlertColor, Button, Checkbox, CircularProgress, FormControlLabel, Grid, IconButton, MenuItem, Select, Snackbar, TextField, Typography, useTheme } from "@mui/material"
 import AceEditor from "react-ace";
 
 import "ace-builds/src-noconflict/mode-javascript";
@@ -15,10 +15,15 @@ import { useUser } from "../../../auth/context/user.context";
 import { useComponents } from "../../../../utils/hooks/useComponent";
 import ReactAce from "react-ace/lib/ace";
 import { Ace } from "ace-builds";
+import { ContextMenu } from "./ContextMenu";
+import { getTypeComponentByText } from "../../utils/getTypeComponentByText";
+
+const types: Tables<'components'>['type'][] = ['component', 'function', 'hooks']
 
 const initialComponent: Tables<'components'> = {
     code: '',
-    props:'{}',
+    props: '{}',
+    type: 'component',
     codeJSX: `// No import react o react native, use RN.Component, React.useState or useState
 
 const ComponentName=()=>{
@@ -86,10 +91,12 @@ export const EditorJSX = () => {
 
 
     function onChange(newValue: string) {
+        const getType = getTypeComponentByText(newValue)
         if (component) {
             _setComponent({
                 ...component,
-                codeJSX: newValue
+                codeJSX: newValue,
+                type: getType || 'function'
             })
         }
     }
@@ -242,7 +249,7 @@ export const EditorJSX = () => {
                     />
                 )}
             </Grid>
-            <Grid container sx={{ width: '350px', height: '350px', bgcolor: 'background.paper', borderRadius: 2, border: t => `1px solid ${t.palette.text.secondary}30` }} alignItems={'self-start'}>
+            <Grid container sx={{ width: '350px', height: '80vh', bgcolor: 'background.paper', borderRadius: 2, border: t => `1px solid ${t.palette.text.secondary}30` }} alignItems={'self-start'}>
                 <Grid item xs={12} p={1}>
                     <Typography variant='overline'>Configuracion adicional</Typography>
                 </Grid>
@@ -252,6 +259,27 @@ export const EditorJSX = () => {
                             _setComponent({ ...component, name: e.target.value })
                         }
                     }} />
+                </Grid>
+                <Grid item xs={12} p={1}>
+                    <Typography variant='overline'>Tipo de componente</Typography>
+                    <Select
+                        size="small"
+                        fullWidth
+                        value={component?.type || 'function'}
+                        onChange={(e) => {
+                            if (component) {
+                                _setComponent({ ...component, type: e.target.value as Tables<'components'>['type'] })
+                            }
+                        }}
+                    >
+                        {
+                            types.map(e => (
+                                <MenuItem value={e} key={`item-type-component-${e}`}>
+                                    {e}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
                 </Grid>
                 <Grid item xs={12} p={1}>
                     <TextField size='small' fullWidth disabled label='Projecto Padre' focused value={project.name} aria-readonly />
@@ -317,42 +345,3 @@ export const EditorJSX = () => {
 }
 
 
-
-const ContextMenu = ({ options, onOptionClick, pos }: { pos: { x: number, y: number }, options: Tables<'components'>[], onOptionClick: (data: Tables<'components'>) => Promise<void> }) => {
-    return (
-        <Grid
-            sx={{
-                position: 'fixed',
-                top: pos.y,
-                left: pos.x,
-                width: '200px',
-                border: t => `1px dashed ${t.palette.text.secondary}10`,
-                listStyleType: 'none',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                borderRadius: '4px',
-                zIndex: 1000,
-                bgcolor: 'background.paper',
-            }}
-        >
-            {options.map((option, index) => (
-                <Grid
-                    key={index}
-                    sx={{
-                        padding: '3px 6px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        borderTop: t => `1px dashed ${t.palette.text.secondary}10`,
-                        ':hover': {
-                            bgcolor: '#111'
-                        }
-                    }}
-                    onClick={() => onOptionClick(option)}
-                >
-                    <Typography variant="caption">{option.name}</Typography>
-                    <Typography variant="caption" color='#FFFFFF40'>component</Typography>
-                </Grid>
-            ))}
-        </Grid>
-    );
-};

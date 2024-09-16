@@ -17,13 +17,13 @@ import { useAlert } from "../../../layouts/components/AlertGlobal"
 import { Console } from "./Console"
 import { useNavigate } from "react-router-dom"
 import { Form } from "./Forms"
-import { Preview } from "./Previews"
 
 
 let render = 0;
 const initialComponent: Tables<'components'> = {
     code: '',
     props: '{}',
+    type: 'component',
     codeJSX: `// No import react o react native, use RN.Component, React.useState or useState
 
 const ComponentName=()=>{
@@ -339,9 +339,8 @@ export const StudioWithOutMemo = () => {
                                 <Form setInfoCompilation={setInfoCompilation} />
                         }
                     </Grid>
-                    <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2 }}>
-                        <Console text={infoCompilation} />
-                        <Preview />
+                    <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2, width: '56vw' }}>
+                        <Console text={infoCompilation} sx={{ width: '56vw' }} />
                     </Grid>
                 </Grid>
             </Grid>

@@ -72,7 +72,7 @@ export const CLI = () => {
             await generateToken({
                 user: user,
                 rol: rolSelected,
-                timeExpire: time,
+                timeExpire: time ?? undefined,
                 title,
             }, session.access_token).then(e => {
                 if (e.token) {
