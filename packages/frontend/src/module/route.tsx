@@ -13,6 +13,8 @@ import { APKs } from "./apks";
 import { Config } from "./config/Config";
 import { ThemeConfigModule } from "./config/theme";
 import { CLI } from "./develop/cli";
+import { Store } from "./store";
+import { ComponentDetails } from "./store/ComponentDetails";
 
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
@@ -106,6 +108,18 @@ export const route = createBrowserRouter([
                 element: <ThemeConfigModule />
             }
         ]
+    },
+    {
+        path: '/store-component',
+        element: <SessionValidation>
+            <Store />
+        </SessionValidation>
+    },
+    {
+        path: '/store-component/:id',
+        element: <SessionValidation>
+            <ComponentDetails />
+        </SessionValidation>
     },
     {
         path: '/cli',

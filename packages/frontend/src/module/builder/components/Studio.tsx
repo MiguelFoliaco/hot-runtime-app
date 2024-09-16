@@ -339,8 +339,8 @@ export const StudioWithOutMemo = () => {
                                 <Form setInfoCompilation={setInfoCompilation} />
                         }
                     </Grid>
-                    <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2, width: '56vw' }}>
-                        <Console text={infoCompilation} sx={{ width: '56vw' }} />
+                    <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2, width: '50vw' }}>
+                        <Console text={infoCompilation} sx={{ width: '55vw', height:'150px' }} />
                     </Grid>
                 </Grid>
             </Grid>
