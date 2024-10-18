@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "concurrently \"cd packages/frontend && npm run dev\" \"cd packages/server && npm run dev\""
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,7 @@
     "hot-app-web": "file:"
   },
   "devDependencies": {
+    "concurrently": "^9.0.1",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2"
   }
