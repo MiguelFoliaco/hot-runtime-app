@@ -113,17 +113,18 @@ export const EditorJSX = () => {
         }
         setLoadingComponent(true)
         if (component?.id === 0) {
+            console.log(component)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             const saveProcess = await supabaseClient.from('components').insert({
-                //...component,
+                ...component,
                 projectid: project.id,
                 codeJSX: component.codeJSX,
                 name: component.name,
                 owner: user.email,
                 projectHostory: project.name,
                 code: '',
-                main_component: component.main_component ? true : null
+                main_component: component.main_component ? true : null,
             }, { count: "exact" })
             if (saveProcess.error) {
                 if (saveProcess.error.message.includes('duplicate key value violates unique constrain')) {
@@ -152,7 +153,7 @@ export const EditorJSX = () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             const saveProcess = await supabaseClient.from('components').update({
-                //...component,
+                ...component,
                 projectid: project.id,
                 codeJSX: component?.codeJSX,
                 name: component?.name,
@@ -294,9 +295,10 @@ export const EditorJSX = () => {
                                     sx={{ ml: 2 }}
                                     icon={<Public />}
                                     checkedIcon={<Public color="secondary" />}
-                                    onChange={() => {
+                                    onChange={(e) => {
+                                        console.log("Checked :: ",e.target.checked)
                                         if (component) {
-                                            _setComponent({ ...component, public: !component.public })
+                                            _setComponent({ ...component, public: e.target.checked })
                                         }
                                     }}
                                     checked={component?.public}

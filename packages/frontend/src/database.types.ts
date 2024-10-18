@@ -120,6 +120,7 @@ export type Database = {
           componentParentRight: number | null
           componentsChildren: number | null
           created_at: string
+          description: string | null
           id: number
           main_component: boolean | null
           name: string
@@ -138,6 +139,7 @@ export type Database = {
           componentParentRight?: number | null
           componentsChildren?: number | null
           created_at?: string
+          description?: string | null
           id?: number
           main_component?: boolean | null
           name: string
@@ -156,6 +158,7 @@ export type Database = {
           componentParentRight?: number | null
           componentsChildren?: number | null
           created_at?: string
+          description?: string | null
           id?: number
           main_component?: boolean | null
           name?: string

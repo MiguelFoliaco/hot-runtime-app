@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Grid, IconButton, SvgIconTypeMap, Tooltip, useTheme } from '@mui/material'
 import imgLogo from '../../../assets/ICON.svg'
 import { Link } from '../../../layouts/components/Link'
-import { AndroidOutlined, ColorLens, ForkLeft, KeyboardCommandKey, NotificationAddOutlined, Workspaces } from '@mui/icons-material'
+import { AndroidOutlined, ColorLens, ForkLeft, KeyboardCommandKey, NotificationAddOutlined, Store, Workspaces } from '@mui/icons-material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 import { useNavigate } from 'react-router-dom'
 
@@ -103,6 +103,12 @@ const options: Record<string, menuItem[]> = {
             title: 'APKs',
             typeIcon: 'icon',
             Icon: AndroidOutlined
+        },
+        {
+            path: '/store-component',
+            title: 'Tienda de componentes',
+            typeIcon: 'icon',
+            Icon: Store
         }
     ],
     services: [
@@ -113,10 +119,10 @@ const options: Record<string, menuItem[]> = {
             Icon: NotificationAddOutlined
         },
         {
-            path:'/cli',
-            title:'CLI',
-            typeIcon:'icon',
-            Icon:KeyboardCommandKey
+            path: '/cli',
+            title: 'CLI',
+            typeIcon: 'icon',
+            Icon: KeyboardCommandKey
         }
         // {
         //     path: '/db',
