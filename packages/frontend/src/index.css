@@ -3,9 +3,11 @@
   padding: 0;
   box-sizing: border-box;
 }
-html{
+
+html {
   background-color: #111111;
 }
+
 .not-font {
   font-family: inherit !important;
 }
@@ -23,12 +25,36 @@ html{
   border-bottom-right-radius: 0 !important;
 }
 
+.scroll::-webkit-scrollbar {
+  width: 5px;
+  background-color: rgb(19, 53, 28);
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  width: 5px;
+  background-color: rgb(9, 176, 54);
+}
+
 .rotation {
   animation-name: rotation_loader;
   animation-duration: 1.5s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   transition: 200ms ease-in-out;
+}
+
+.form {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.form .MuiGrid-root {
+  width: 100% !important;
+  margin-bottom: 10px;
+}
+
+.form label {
+  margin-bottom: 10px;
 }
 
 @keyframes fondo-animado {
@@ -54,11 +80,11 @@ html{
   55% {
     color: #828fff;
   }
-  
+
   75% {
     color: #D941FF;
   }
-  
+
   100% {
     transform: rotate(-360deg);
     color: #41b9ff;

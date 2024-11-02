@@ -1,4 +1,4 @@
-export type Json =
+ export type Json =
   | string
   | number
   | boolean
@@ -9,6 +9,60 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      actions: {
+        Row: {
+          code: string
+          created_at: string
+          description: string
+          id: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description: string
+          id?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string
+          id?: number
+        }
+        Relationships: []
+      }
+      builds: {
+        Row: {
+          build_url: string
+          created_at: string
+          git_commit_hash: string
+          git_commit_message: string
+          id: number
+          logs_s3_key_prefix: string
+          payload_str: string
+          size: number | null
+        }
+        Insert: {
+          build_url?: string
+          created_at?: string
+          git_commit_hash: string
+          git_commit_message: string
+          id?: number
+          logs_s3_key_prefix: string
+          payload_str?: string
+          size?: number | null
+        }
+        Update: {
+          build_url?: string
+          created_at?: string
+          git_commit_hash?: string
+          git_commit_message?: string
+          id?: number
+          logs_s3_key_prefix?: string
+          payload_str?: string
+          size?: number | null
+        }
+        Relationships: []
+      }
       code: {
         Row: {
           aviable_production: boolean | null
@@ -66,6 +120,7 @@ export type Database = {
           componentParentRight: number | null
           componentsChildren: number | null
           created_at: string
+          description: string | null
           id: number
           main_component: boolean | null
           name: string
@@ -73,6 +128,7 @@ export type Database = {
           projectHostory: string | null
           projectid: number | null
           public: boolean
+          type: Database["public"]["Enums"]["type_component"]
         }
         Insert: {
           code: string
@@ -82,6 +138,7 @@ export type Database = {
           componentParentRight?: number | null
           componentsChildren?: number | null
           created_at?: string
+          description?: string | null
           id?: number
           main_component?: boolean | null
           name: string
@@ -89,6 +146,7 @@ export type Database = {
           projectHostory?: string | null
           projectid?: number | null
           public?: boolean
+          type?: Database["public"]["Enums"]["type_component"]
         }
         Update: {
           code?: string
@@ -98,6 +156,7 @@ export type Database = {
           componentParentRight?: number | null
           componentsChildren?: number | null
           created_at?: string
+          description?: string | null
           id?: number
           main_component?: boolean | null
           name?: string
@@ -105,6 +164,7 @@ export type Database = {
           projectHostory?: string | null
           projectid?: number | null
           public?: boolean
+          type?: Database["public"]["Enums"]["type_component"]
         }
         Relationships: [
           {
@@ -112,6 +172,44 @@ export type Database = {
             columns: ["projectid"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content: {
+        Row: {
+          componentId: number
+          created_at: string
+          data: Json
+          date_plublish: string
+          description: string
+          id: number
+          title: string
+        }
+        Insert: {
+          componentId: number
+          created_at?: string
+          data?: Json
+          date_plublish?: string
+          description?: string
+          id?: number
+          title: string
+        }
+        Update: {
+          componentId?: number
+          created_at?: string
+          data?: Json
+          date_plublish?: string
+          description?: string
+          id?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_componentId_fkey"
+            columns: ["componentId"]
+            isOneToOne: true
+            referencedRelation: "components"
             referencedColumns: ["id"]
           },
         ]
@@ -131,6 +229,30 @@ export type Database = {
           created_at?: string
           id?: number
           name?: string
+        }
+        Relationships: []
+      }
+      process: {
+        Row: {
+          created_at: string
+          id: number
+          last_update: string
+          process_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          last_update?: string
+          process_id?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          last_update?: string
+          process_id?: string
+          status?: string
         }
         Relationships: []
       }
@@ -161,13 +283,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "projects_publicateBy_fkey"
-            columns: ["publicateBy"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "projects_targets_id_fkey"
             columns: ["targets_id"]
             isOneToOne: true
@@ -175,6 +290,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rols: {
+        Row: {
+          actions: number[]
+          created_at: string
+          description: string | null
+          id: number
+          status: boolean
+          title: string
+        }
+        Insert: {
+          actions: number[]
+          created_at?: string
+          description?: string | null
+          id?: number
+          status?: boolean
+          title?: string
+        }
+        Update: {
+          actions?: number[]
+          created_at?: string
+          description?: string | null
+          id?: number
+          status?: boolean
+          title?: string
+        }
+        Relationships: []
       }
       targets: {
         Row: {
@@ -194,6 +336,33 @@ export type Database = {
           created_at?: string
           id?: number
           name?: string
+        }
+        Relationships: []
+      }
+      tokens_dev: {
+        Row: {
+          assing_by: string
+          create_by: string
+          created_at: string
+          id: number
+          show: boolean
+          title: string
+        }
+        Insert: {
+          assing_by: string
+          create_by: string
+          created_at?: string
+          id?: number
+          show?: boolean
+          title?: string
+        }
+        Update: {
+          assing_by?: string
+          create_by?: string
+          created_at?: string
+          id?: number
+          show?: boolean
+          title?: string
         }
         Relationships: []
       }
@@ -236,6 +405,7 @@ export type Database = {
           os_id: number
           programing_date: string | null
           projectid: number
+          publicate_by_email: string | null
           publicateBy: string
         }
         Insert: {
@@ -249,6 +419,7 @@ export type Database = {
           os_id: number
           programing_date?: string | null
           projectid: number
+          publicate_by_email?: string | null
           publicateBy?: string
         }
         Update: {
@@ -262,6 +433,7 @@ export type Database = {
           os_id?: number
           programing_date?: string | null
           projectid?: number
+          publicate_by_email?: string | null
           publicateBy?: string
         }
         Relationships: [
@@ -279,13 +451,6 @@ export type Database = {
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "version-code_publicateBy_fkey"
-            columns: ["publicateBy"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
@@ -296,7 +461,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      type_component: "component" | "function" | "hooks"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -384,4 +549,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

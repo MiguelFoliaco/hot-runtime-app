@@ -8,12 +8,15 @@ import {
     Controls,
     MiniMap,
     Background,
-    BackgroundVariant
+    BackgroundVariant,
+    Node
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo } from 'react';
 import { ComponentNode } from './Component';
+import { useComponents } from '../../../../utils/hooks/useComponent';
+import { random } from '../../../../utils/random';
 
 const initialNodes = [
     { id: 'header#ido', type: 'componentNode', position: { x: 0, y: 100 }, data: { name: 'Header' } },
@@ -26,7 +29,7 @@ const initialEdges = [
 ];
 
 export const Flows = () => {
-
+    const components = useComponents(state => state.components)
     const [nodes, setAllNodesChange, onNodesChange] = useNodesState(initialNodes)
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
@@ -38,8 +41,24 @@ export const Flows = () => {
         }, [setEdges])
 
     useEffect(() => {
-        setAllNodesChange(initialNodes)
-    }, [])
+        if (components) {
+            const newNodes = components.map(e => {
+                const item: Node = {
+                    id: `${e.name}-${e.id}`,
+                    data: e,
+                    type: 'componentNode',
+                    position: {
+                        x: random(0, 500),
+                        y: random(0, 500)
+                    }
+                }
+                return item as Node;
+            })
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            setAllNodesChange(newNodes)
+        }
+    }, [components])
     return (
         <Grid sx={{ width: '100%', height: '350px', bgcolor: '#1f1f1f', borderRadius: 2 }}>
             <ReactFlow

@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.routeWebHook = void 0;
+const express_1 = require("express");
+const client_1 = require("./client");
+const verifySession_1 = require("../../auth/middleware/verifySession");
+const db_1 = require("../../../db");
+const routeWebHook = (0, express_1.Router)();
+exports.routeWebHook = routeWebHook;
+const client = new client_1.ClientWebHookExpo(db_1.client);
+routeWebHook.post('/expo', client.getBuildStatus);
+routeWebHook.get('/expo/generate-apk', verifySession_1.verifySession, client.generateAPK);

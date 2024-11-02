@@ -8,6 +8,13 @@ import { AuthPage } from "./auth";
 import { useUser } from "./auth/context/user.context";
 import { Home } from "./home";
 import { Workspace } from "./builder/workspace";
+import { Versions } from "./builder/versions";
+import { APKs } from "./apks";
+import { Config } from "./config/Config";
+import { ThemeConfigModule } from "./config/theme";
+import { CLI } from "./develop/cli";
+import { Store } from "./store";
+import { ComponentDetails } from "./store/ComponentDetails";
 
 
 export const SessionValidation = ({ children, loginPage }: { children: ReactNode, loginPage?: boolean }) => {
@@ -73,9 +80,51 @@ export const route = createBrowserRouter([
         </SessionValidation>
     },
     {
+        path: '/workspace/versions',
+        element: <SessionValidation>
+            <Versions />
+        </SessionValidation>
+    },
+    {
         path: '/home',
         element: <SessionValidation>
             <Home />
+        </SessionValidation>
+    },
+    {
+        path: '/apks',
+        element: <SessionValidation>
+            <APKs />
+        </SessionValidation>
+    },
+    {
+        path: '/config',
+        element: <SessionValidation>
+            <Config />
+        </SessionValidation>,
+        children: [
+            {
+                path: 'theme',
+                element: <ThemeConfigModule />
+            }
+        ]
+    },
+    {
+        path: '/store-component',
+        element: <SessionValidation>
+            <Store />
+        </SessionValidation>
+    },
+    {
+        path: '/store-component/:id',
+        element: <SessionValidation>
+            <ComponentDetails />
+        </SessionValidation>
+    },
+    {
+        path: '/cli',
+        element: <SessionValidation>
+            <CLI />
         </SessionValidation>
     },
     {

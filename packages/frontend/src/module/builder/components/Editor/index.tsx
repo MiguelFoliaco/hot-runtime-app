@@ -1,8 +1,9 @@
-import { Alert, AlertColor, Button, Checkbox, CircularProgress, FormControlLabel, Grid, IconButton, Snackbar, TextField, Typography } from "@mui/material"
+import { Alert, AlertColor, Button, Checkbox, CircularProgress, FormControlLabel, Grid, IconButton, MenuItem, Select, Snackbar, TextField, Typography, useTheme } from "@mui/material"
 import AceEditor from "react-ace";
 
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/theme-chrome";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/ext-code_lens";
 import { Tables } from "../../../../database.types";
@@ -14,14 +15,18 @@ import { useUser } from "../../../auth/context/user.context";
 import { useComponents } from "../../../../utils/hooks/useComponent";
 import ReactAce from "react-ace/lib/ace";
 import { Ace } from "ace-builds";
+import { ContextMenu } from "./ContextMenu";
+import { getTypeComponentByText } from "../../utils/getTypeComponentByText";
+import { initial } from "./codeInitial";
+
+const types: Tables<'components'>['type'][] = ['component', 'function', 'hooks']
 
 const initialComponent: Tables<'components'> = {
     code: '',
-    codeJSX: `// No import react o react native, use RN.Component, React.useState or useState
-
-const ComponentName=()=>{
-  return <RN.Text>Hola mundo</RN.Text>
-}`,
+    description: '',
+    // props: '{}',
+    type: 'component',
+    codeJSX: initial,
     componentParent: null,
     componentParentLeft: null,
     componentParentRight: null,
@@ -36,6 +41,7 @@ const ComponentName=()=>{
     main_component: false
 }
 export const EditorJSX = () => {
+    const theme = useTheme()
     const ref = useRef<ReactAce>(null)
     const project = useProject(state => state.projectSelected!)
     const user = useUser(state => state.values.user!)
@@ -83,10 +89,12 @@ export const EditorJSX = () => {
 
 
     function onChange(newValue: string) {
+        const getType = getTypeComponentByText(newValue)
         if (component) {
             _setComponent({
                 ...component,
-                codeJSX: newValue
+                codeJSX: newValue,
+                type: getType || 'function'
             })
         }
     }
@@ -103,17 +111,18 @@ export const EditorJSX = () => {
         }
         setLoadingComponent(true)
         if (component?.id === 0) {
+            console.log(component)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             const saveProcess = await supabaseClient.from('components').insert({
-                //...component,
+                ...component,
                 projectid: project.id,
                 codeJSX: component.codeJSX,
                 name: component.name,
                 owner: user.email,
                 projectHostory: project.name,
                 code: '',
-                main_component: component.main_component ? true : null
+                main_component: component.main_component ? true : null,
             }, { count: "exact" })
             if (saveProcess.error) {
                 if (saveProcess.error.message.includes('duplicate key value violates unique constrain')) {
@@ -142,7 +151,7 @@ export const EditorJSX = () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             const saveProcess = await supabaseClient.from('components').update({
-                //...component,
+                ...component,
                 projectid: project.id,
                 codeJSX: component?.codeJSX,
                 name: component?.name,
@@ -184,14 +193,11 @@ export const EditorJSX = () => {
         setLoadingComponent(false)
     }
 
-
-
-
     return (
         <Grid
             onClick={handleEditorClick}
             sx={{ height: '350px', pl: 2, display: 'flex', gap: 2 }}>
-            <Grid sx={{ height: '350px', width: '100%', position: 'relative' }}>
+            <Grid sx={{ height: '350px', width: '100%', position: 'relative', }}>
                 <AceEditor
                     ref={ref}
                     enableBasicAutocompletion
@@ -221,7 +227,7 @@ export const EditorJSX = () => {
                     }}
                     readOnly={loadingComponent}
                     mode="javascript"
-                    theme="monokai"
+                    theme={theme.palette.mode === 'dark' ? "monokai" : 'chrome'}
                     enableSnippets
                     onChange={onChange}
                     name="UNIQUE_ID_OF_DIV"
@@ -242,19 +248,40 @@ export const EditorJSX = () => {
                     />
                 )}
             </Grid>
-            <Grid container sx={{ width: '300px', height: '350px', bgcolor: '#1f1f1f', borderRadius: 2, }} alignItems={'self-start'}>
+            <Grid container sx={{ width: '350px', height: '80vh', bgcolor: 'background.paper', borderRadius: 2, border: t => `1px solid ${t.palette.text.secondary}30` }} alignItems={'self-start'}>
                 <Grid item xs={12} p={1}>
                     <Typography variant='overline'>Configuracion adicional</Typography>
                 </Grid>
                 <Grid item xs={12} p={1}>
-                    <TextField disabled={loadingComponent} size='small' label='Nombre' value={component?.name} onChange={(e) => {
+                    <TextField disabled={loadingComponent} fullWidth size='small' label='Nombre' value={component?.name} onChange={(e) => {
                         if (component) {
                             _setComponent({ ...component, name: e.target.value })
                         }
                     }} />
                 </Grid>
                 <Grid item xs={12} p={1}>
-                    <TextField size='small' disabled label='Projecto Padre' focused value={project.name} aria-readonly />
+                    <Typography variant='overline'>Tipo de componente</Typography>
+                    <Select
+                        size="small"
+                        fullWidth
+                        value={component?.type || 'function'}
+                        onChange={(e) => {
+                            if (component) {
+                                _setComponent({ ...component, type: e.target.value as Tables<'components'>['type'] })
+                            }
+                        }}
+                    >
+                        {
+                            types.map(e => (
+                                <MenuItem value={e} key={`item-type-component-${e}`}>
+                                    {e}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
+                </Grid>
+                <Grid item xs={12} p={1}>
+                    <TextField size='small' fullWidth disabled label='Projecto Padre' focused value={project.name} aria-readonly />
                 </Grid>
                 <Grid item container xs={12} p={0}>
                     <Grid item xs={12}>
@@ -266,9 +293,10 @@ export const EditorJSX = () => {
                                     sx={{ ml: 2 }}
                                     icon={<Public />}
                                     checkedIcon={<Public color="secondary" />}
-                                    onChange={() => {
+                                    onChange={(e) => {
+                                        console.log("Checked :: ", e.target.checked)
                                         if (component) {
-                                            _setComponent({ ...component, public: !component.public })
+                                            _setComponent({ ...component, public: e.target.checked })
                                         }
                                     }}
                                     checked={component?.public}
@@ -317,44 +345,3 @@ export const EditorJSX = () => {
 }
 
 
-
-const ContextMenu = ({ options, onOptionClick, pos }: { pos: { x: number, y: number }, options: Tables<'components'>[], onOptionClick: (data: Tables<'components'>) => Promise<void> }) => {
-    return (
-        <Grid
-            style={{
-                position: 'fixed',
-                top: pos.y,
-                left: pos.x,
-                width: '200px',
-                border: '1px solid #FFFFFF10',
-                listStyleType: 'none',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                borderRadius: '4px',
-                zIndex: 1000,
-                backgroundColor: '#1f1f1f',
-            }}
-        >
-            {options.map((option, index) => (
-                <Grid
-                    key={index}
-                    style={{
-                        padding: '3px 6px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        borderTop: '1px solid #FFFFFF10'
-                    }}
-                    sx={{
-                        ':hover': {
-                            bgcolor: '#111'
-                        }
-                    }}
-                    onClick={() => onOptionClick(option)}
-                >
-                    <Typography variant="caption">{option.name}</Typography>
-                    <Typography variant="caption" color='#FFFFFF40'>component</Typography>
-                </Grid>
-            ))}
-        </Grid>
-    );
-};

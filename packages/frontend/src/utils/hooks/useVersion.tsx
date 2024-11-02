@@ -8,6 +8,8 @@ type IVersion = {
     setVersions: (data: Tables<'version-code'>[]) => void
     setVersion: (data: Tables<'version-code'>) => void
     setOSs: (data: Tables<'OS'>[]) => void
+    versionInProduction: Tables<'version-code'>[];
+    setVersionProduction: (data: Tables<'version-code'>[]) => void
 }
 
 export const useVersion = create<IVersion>(set => ({
@@ -15,5 +17,7 @@ export const useVersion = create<IVersion>(set => ({
     setVersion: (data) => set({ versionSelected: data }),
     setVersions: (versions) => set({ versions }),
     oss: [],
-    setOSs: (oss) => set({ oss })
+    setOSs: (oss) => set({ oss }),
+    versionInProduction: [],
+    setVersionProduction: (data) => set({ versionInProduction: data })
 }))

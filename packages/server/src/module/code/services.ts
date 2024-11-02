@@ -1,4 +1,4 @@
-import { PostgrestSingleResponse, SupabaseClient } from "@supabase/supabase-js";
+import { PostgrestError, PostgrestSingleResponse, SupabaseClient } from "@supabase/supabase-js";
 import esbuild from 'esbuild';
 import { Database, Tables } from "../../database.types";
 
@@ -13,7 +13,7 @@ export class CodeServices {
                 error: codeRequest.error
             };
             const codes = codeRequest.data.map(e => e.codeJSX);
-            const codesUnion = codes.join('\n');
+            const codesUnion = codes.join('\n').replaceAll('export const', 'const');
             const codebuild = await esbuild.transform(codesUnion, {
                 jsx: 'transform',
                 loader: 'tsx',
@@ -27,6 +27,8 @@ export class CodeServices {
                 code_build: codebuild.code,
                 code_jsx: codesUnion,
                 publicateBy: version.publicateBy,
+                publicate_by_email: version.publicate_by_email,
+                programing_date: version.programing_date,
                 name: version.name || 'Without Name'
             })
             return requestInsert
@@ -35,15 +37,43 @@ export class CodeServices {
             return {
                 count: 0,
                 data: null,
-                error: null,
+                error: String(err),
                 status: 200,
-                statusText: String(err)
-            } as PostgrestSingleResponse<null>
+                statusText: "Error en compilación"
+            }
         }
     }
-    getVersionByProject = async (projectId: number) => {
-        return await this.client.from('version-code').select().eq('projectid', projectId).eq('available_production', true).limit(1).order('programing_date', {
+    getVersionByProject = async (projectId: number, os_id: number) => {
+        return await this.client.from('version-code').select().eq('projectid', projectId).eq('os_id', os_id).eq('available_production', true).limit(1).order('programing_date', {
             ascending: false
         })
+    }
+
+    compile = async (codeJSX: string) => {
+        const codebuild = await esbuild.transform(codeJSX, {
+            jsx: 'transform',
+            loader: 'tsx',
+            minify: true
+        });
+
+        return codebuild;
+    }
+
+    createComponents = async (data: Tables<'components'>[], projectId: number) => {
+
+        const components = await this.client.from('components').select().in('name', data.map(e => e.name)).eq('projectid', projectId)
+        if (components.error === null) {
+            //Update components
+            const responses = data.map(e => {
+                const item = components.data.find(el => el.name === e.name);
+                if (item) {
+                    return this.client.from('components').update({ ...e }).eq('id', item.id)
+                }
+                return this.client.from('components').insert(e)
+            })
+
+            return await Promise.all(responses)
+        }
+        return components.error
     }
 }

@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.routeWebHookGihub = void 0;
+const express_1 = require("express");
+const db_1 = require("../../../db");
+const client_1 = require("./client");
+const verifySession_1 = require("../../auth/middleware/verifySession");
+const routeWebHookGihub = (0, express_1.Router)();
+exports.routeWebHookGihub = routeWebHookGihub;
+const client = new client_1.ClientWebHookGithub(db_1.client);
+routeWebHookGihub.post('/github', client.getStatusWorkflows);
+routeWebHookGihub.post('/github/generate-apk', verifySession_1.verifySession, client.generateGithub);

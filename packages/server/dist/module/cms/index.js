@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.routeCMS = void 0;
+const express_1 = require("express");
+const services_1 = require("./services");
+const db_1 = require("../../db");
+const controller_1 = require("./controller");
+const cmsService = new services_1.CMSServices(db_1.client);
+const cmsController = new controller_1.CMSController(cmsService);
+const routeCMS = (0, express_1.Router)();
+exports.routeCMS = routeCMS;
+routeCMS.get('/cms-props', cmsController.getComponents);

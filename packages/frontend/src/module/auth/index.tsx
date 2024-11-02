@@ -4,7 +4,6 @@ import { supabaseClient } from "../../data/supabase"
 import { useState } from "react"
 import { useUser } from "./context/user.context"
 import { redirect, useNavigate } from "react-router-dom"
-import logo from '../../assets/ICON.svg'
 
 async function signUpNewUser({ email, password }: { email: string, password: string }) {
     const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -19,7 +18,6 @@ async function loginWithGithub() {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'github',
         options: {
-            //  redirectTo: 'https://zsfrrxykerwymjkaiasp.supabase.co/auth/v1/callback'
         }
     })
 
@@ -77,7 +75,7 @@ export const AuthPage = () => {
 
             <Grid className="fondo-animado" sx={{ position: 'absolute', bottom: 0, left: 0, width: '50px', height: '50px', bgcolor: 'secondary.main', display: 'flex', borderRadius: 0, alignItems: 'center', justifyContent: 'center', p: '3px', pb: 0, borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
                 {/* <Grid sx={{ p: 0, bgcolor: 'background.default', padding: 1, borderRadius: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}> */}
-                <img src={logo} height={'100%'} style={{ objectFit: 'contain', }} />
+                <img src={'/ICON.svg'} height={'100%'} style={{ objectFit: 'contain', }} />
                 {/* </Grid> */}
             </Grid>
 

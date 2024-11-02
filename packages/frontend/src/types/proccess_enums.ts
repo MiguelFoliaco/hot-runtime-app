@@ -1,0 +1,3 @@
+export enum PROCESS_TYPE{
+    APK_GENERATE='APK_GENERATE'
+}

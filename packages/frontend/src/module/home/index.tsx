@@ -1,4 +1,4 @@
-import { Grid, Skeleton, Typography } from "@mui/material"
+import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "./components/LeftBar"
 import { useUser } from "../auth/context/user.context"
@@ -13,6 +13,7 @@ import { getOS } from "./services/version"
 
 export const Home = () => {
     const user = useUser(state => state.values.user)
+    const [createProject, setCreateProject] = useState(false);
     const { oss, setOSs } = useVersion(state => state)
     const [isLoading, setIsLoading] = useState(false)
     const { projects, setProjects } = useProject(state => state)
@@ -58,12 +59,18 @@ export const Home = () => {
                                         projects.length > 0 ?
                                             <ProjectList />
                                             :
-                                            <CreateProject />
+                                            <CreateProject closeModal={() => setCreateProject(false)} />
+                                    }
+                                    {
+                                        createProject && <CreateProject closeModal={() => setCreateProject(false)} />
                                     }
                                 </>
                         }
                     </Grid>
                 </Grid>
+                <Button onClick={() => {
+                    setCreateProject(true)
+                }} color="secondary" sx={{ position: 'absolute', bottom: 10, right: 10 }}>Crear uno nuevo</Button>
             </Grid>
         </LayoutBuilder >
     )
