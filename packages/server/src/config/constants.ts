@@ -16,11 +16,11 @@ const configDev: config = {
 }
 
 const configProd: config = {
-    gitHubUrl: "",
-    ownerRepo: "",
-    repo: "",
-    origin: 'http://192.168.1.4:3000/api',
-    originSocket: 'http://192.168.1.4:3001/api'
+    gitHubUrl: `https://api.github.com/repos`,
+    ownerRepo: 'MiguelFoliaco',
+    repo: 'runtime-rn',
+    origin: 'https://hot-runtime-app.onrender.com/api',
+    originSocket: 'https://hot-runtime-app.onrender.com/api'
 }
 
 export const config = env('NODE_ENV') === 'development' ? configDev : configProd
