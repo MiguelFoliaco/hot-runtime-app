@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, IconButton, MenuItem, Select, Tooltip, Typography } from "@mui/material"
+import { Button, CircularProgress, Grid, IconButton, Menu, MenuItem, Select, Tooltip, Typography } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { Android, ContentCopy, Download, RemoveRedEye, Replay } from "@mui/icons-material"
@@ -19,6 +19,8 @@ import { PROCESS_TYPE } from "../../types/proccess_enums"
 import { Tables } from "../../database.types"
 import { Console } from "../builder/components/Console"
 import { config } from "../../configs/constants"
+import { useVersion } from "../../utils/hooks/useVersion"
+import { getOS } from "../home/services/version"
 
 
 export const APKs = () => {
@@ -26,6 +28,7 @@ export const APKs = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [statusProcessApk, setStatusProcessApk] = useState<Partial<Tables<'process'>>>({ status: 'on' })
     const { projects, setProjects, setProject, projectSelected } = useProject()
+    const { oss, setOSs } = useVersion()
     const { builds, fillBuilds } = useAPKs()
     const [isLoadindDownload, setIsLoadindDownload] = useState(false)
     const [openConsole, setOpenConsole] = useState(false)
@@ -34,8 +37,12 @@ export const APKs = () => {
     const { openAlert } = useAlert()
     const { values: { session } } = useUser()
 
-
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
     useEffect(() => {
+        if (oss.length === 0) {
+            getOS(setOSs)
+        }
         statusProccess(PROCESS_TYPE.APK_GENERATE, setStatusProcessApk)
         if (projects.length === 0) {
             getProjects({ setProjevt: setProjects })
@@ -52,7 +59,9 @@ export const APKs = () => {
         }
     }, [])
 
-    const generateAPK = async () => {
+    const generateAPK = async (osId: number) => {
+        setAnchorEl(null);
+        const check = confirm("¿Desea generar una version de desarrollo?");
         if (statusProcessApk?.status === 'on') {
             return openAlert({ msg: 'Hay una generación en curso, por favor espere a que este termine para empezar uno nuevo', severity: 'warning' })
         }
@@ -61,7 +70,7 @@ export const APKs = () => {
         }
         setOpenConsole(true)
         api.method = 'post'
-        const data = await api.rest<{ error: boolean, msg: string }>(`/github/generate-apk?workflows_id=${config.workflowGenerateApkId}&project_id=${projectSelected?.id}`, {
+        const data = await api.rest<{ error: boolean, msg: string }>(`/github/generate-apk?workflows_id=${config.workflowGenerateApkId}&project_id=${projectSelected?.id}&os_id=${osId}&dev=${check ? 'true' : 'false'}`, {
             headers: {
                 authorization: `Bearer ${session?.access_token}`
             }
@@ -158,11 +167,33 @@ export const APKs = () => {
     //         clearInterval(id)
     //     }
     // }, [])//! Demostración
+
+    const openListOs = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    }
+
     return (
         <LayoutBuilder
             listItemsLeft={LeftBar}
         >
-            <Grid container sx={{ position: 'relative', }}>
+            <Grid container sx={{ position: 'relative' }}>
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={() => {
+                        setAnchorEl(null)
+                    }}
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    {
+                        oss.map(e => (
+                            <MenuItem key={`menu-item-${e.id}-os`} onClick={() => generateAPK(e.id)}>{e.name}</MenuItem>
+                        ))
+                    }
+                </Menu>
                 <Grid item xs={12} sx={{
                     height: '50px',
                     width: '100%',
@@ -186,11 +217,11 @@ export const APKs = () => {
                         <Replay className={isLoading ? "rotation" : undefined} />
                     </IconButton>
                 </Grid>
-                <Grid container item xs={12} sx={{ p: 1 }}>
+                <Grid container item xs={12}>
                     <Grid xs={4}>
                         <Select size='small' sx={{ width: '100%' }} onChange={(e) => getFiles(e.target.value.toString())} value={projectSelected?.id ?? 0}>
                             <MenuItem value={0}>
-                                Seleccione un projecto
+                                Seleccione un proyecto
                             </MenuItem>
                             {
                                 projects.map(e => (
@@ -201,12 +232,12 @@ export const APKs = () => {
                     </Grid>
                 </Grid>
                 {
-                    builds.length === 0 ?
+                    builds.length === 0 && openConsole === false ?
                         <Grid item xs={12} sx={{ flexDirection: 'column', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Typography>Aun no nada aquí</Typography>
                             <Button
                                 disabled={statusProcessApk?.status === 'on'}
-                                onClick={generateAPK}
+                                onClick={openListOs}
                                 sx={{ mt: 1 }} color='secondary'
                                 endIcon={<Android />}
                             >Compilar una version</Button>
@@ -270,12 +301,12 @@ export const APKs = () => {
                                 }
                                 <Button
                                     disabled={statusProcessApk?.status === 'on'}
-                                    onClick={generateAPK}
+                                    onClick={openListOs}
                                     sx={{ position: 'absolute', bottom: 10, right: 10 }} color='secondary'
                                     endIcon={(statusProcessApk?.status === 'on') ? <CircularProgress size='20px' /> : <Android />}
                                 >Compilar una version</Button>
                             </Grid>
-                            <Grid item xs={build ? 4 : 0} className="scroll" sx={{ opacity: build ? 1 : 0, transition: '200ms', height: '500px', width: build ? undefined : '0px', overflowX: 'scroll', overflowY: 'scroll', }}>
+                            <Grid item xs={build ? 4 : 0} className="scroll" sx={{ opacity: build ? 1 : 0, transition: '200ms', height: '55vh', width: build ? undefined : '0px', overflowX: 'scroll', overflowY: 'scroll', }}>
                                 <Typography variant="overline">
                                     <pre>
                                         {

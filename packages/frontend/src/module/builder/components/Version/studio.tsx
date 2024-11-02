@@ -244,7 +244,7 @@ export const VersionsStudio = () => {
                                 xs={12}
                                 sx={{ borderRadius: 2, width: '100%', p: 0.5, my: 1, display: 'flex', gap: 2, flexWrap: 'wrap', border: t => `1px solid ${t.palette.text.secondary}20` }}
                             >
-                                <Typography variant="overline">URL: <Typography variant="caption" sx={{ ml: 1, bgcolor: '#1f1f1f', p: 0.5, borderRadius: 1, textTransform: 'lowercase' }}>{`${config.api}/api/version?projectId=${versionSelected.projectid}&os_id=${versionSelected.os_id}`}</Typography></Typography>
+                                <Typography variant="overline">URL: <Typography variant="caption" sx={{ ml: 1, bgcolor: 'primary.main',color:'primary.contrastText', p: 0.5, borderRadius: 1, textTransform: 'lowercase' }}>{`${config.api}/api/version?projectId=${versionSelected.projectid}&os_id=${versionSelected.os_id}`}</Typography></Typography>
                                 <IconButton size='small' onClick={async () => {
                                     await navigator.clipboard.writeText(`${config.api}/api/version?projectId=${versionSelected.projectid}&os_id=${versionSelected.os_id}`)
                                     openAlert({

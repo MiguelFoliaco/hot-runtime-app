@@ -1,4 +1,4 @@
-export type Json =
+ export type Json =
   | string
   | number
   | boolean
@@ -127,7 +127,6 @@ export type Database = {
           owner: string
           projectHostory: string | null
           projectid: number | null
-          props: string
           public: boolean
           type: Database["public"]["Enums"]["type_component"]
         }
@@ -146,7 +145,6 @@ export type Database = {
           owner: string
           projectHostory?: string | null
           projectid?: number | null
-          props?: string
           public?: boolean
           type?: Database["public"]["Enums"]["type_component"]
         }
@@ -165,7 +163,6 @@ export type Database = {
           owner?: string
           projectHostory?: string | null
           projectid?: number | null
-          props?: string
           public?: boolean
           type?: Database["public"]["Enums"]["type_component"]
         }
@@ -175,6 +172,44 @@ export type Database = {
             columns: ["projectid"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content: {
+        Row: {
+          componentId: number
+          created_at: string
+          data: Json
+          date_plublish: string
+          description: string
+          id: number
+          title: string
+        }
+        Insert: {
+          componentId: number
+          created_at?: string
+          data?: Json
+          date_plublish?: string
+          description?: string
+          id?: number
+          title: string
+        }
+        Update: {
+          componentId?: number
+          created_at?: string
+          data?: Json
+          date_plublish?: string
+          description?: string
+          id?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_componentId_fkey"
+            columns: ["componentId"]
+            isOneToOne: true
+            referencedRelation: "components"
             referencedColumns: ["id"]
           },
         ]
@@ -247,13 +282,6 @@ export type Database = {
           targets_id?: number | null
         }
         Relationships: [
-          {
-            foreignKeyName: "projects_publicateBy_fkey"
-            columns: ["publicateBy"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "projects_targets_id_fkey"
             columns: ["targets_id"]
@@ -336,15 +364,7 @@ export type Database = {
           show?: boolean
           title?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "tokens_dev_create_by_fkey"
-            columns: ["create_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {
@@ -429,13 +449,6 @@ export type Database = {
             columns: ["projectid"]
             isOneToOne: false
             referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "version-code_publicateBy_fkey"
-            columns: ["publicateBy"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -536,4 +549,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

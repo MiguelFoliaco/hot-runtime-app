@@ -52,6 +52,10 @@ export const Workspace = () => {
                     setLoading(false)
                 })
         }
+
+        return () => {
+            clear()
+        }
     }, [])
 
     return (

@@ -17,18 +17,16 @@ import ReactAce from "react-ace/lib/ace";
 import { Ace } from "ace-builds";
 import { ContextMenu } from "./ContextMenu";
 import { getTypeComponentByText } from "../../utils/getTypeComponentByText";
+import { initial } from "./codeInitial";
 
 const types: Tables<'components'>['type'][] = ['component', 'function', 'hooks']
 
 const initialComponent: Tables<'components'> = {
     code: '',
-    props: '{}',
+    description: '',
+    // props: '{}',
     type: 'component',
-    codeJSX: `// No import react o react native, use RN.Component, React.useState or useState
-
-const ComponentName=()=>{
-  return <RN.Text>Hola mundo</RN.Text>
-}`,
+    codeJSX: initial,
     componentParent: null,
     componentParentLeft: null,
     componentParentRight: null,
@@ -296,7 +294,7 @@ export const EditorJSX = () => {
                                     icon={<Public />}
                                     checkedIcon={<Public color="secondary" />}
                                     onChange={(e) => {
-                                        console.log("Checked :: ",e.target.checked)
+                                        console.log("Checked :: ", e.target.checked)
                                         if (component) {
                                             _setComponent({ ...component, public: e.target.checked })
                                         }

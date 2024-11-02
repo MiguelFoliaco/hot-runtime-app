@@ -89,7 +89,8 @@ export const LayoutBuilder = ({ children, listItemsLeft: ListLeft }: { children:
                 gridRowEnd: 21,
                 width: '100%',
                 height: '100%',
-                p: 2
+                p: 2,
+                boxSizing: 'border-box'
             }}>
                 {children}
             </Grid>

@@ -22,7 +22,7 @@ import { Form } from "./Forms"
 let render = 0;
 const initialComponent: Tables<'components'> = {
     code: '',
-    props: '{}',
+    description: '',
     type: 'component',
     codeJSX: `// No import react o react native, use RN.Component, React.useState or useState
 
@@ -99,11 +99,13 @@ export const StudioWithOutMemo = () => {
     useEffect(() => {
         if (oss.length === 0) {
             getOS(setOSs)
-                .finally(() => {
-                    setOsSelected(oss[0].id)
-                })
         }
     }, [])
+    useEffect(() => {
+        if (oss.length > 0) {
+            setOsSelected(oss[0]?.id)
+        }
+    }, [oss])
 
     const generateVersion = async () => {
         if (osSelected === 0) {
@@ -340,7 +342,7 @@ export const StudioWithOutMemo = () => {
                         }
                     </Grid>
                     <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2, width: '50vw' }}>
-                        <Console text={infoCompilation} sx={{ width: '55vw', height:'150px' }} />
+                        <Console text={infoCompilation} sx={{ width: '55vw', height: '150px' }} />
                     </Grid>
                 </Grid>
             </Grid>

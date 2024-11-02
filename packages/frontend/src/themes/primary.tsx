@@ -125,7 +125,7 @@ export const begona = createTheme({
             main: '#5d5c31',
             light: '#93925b',
             dark: '#4d4c24',
-            contrastText: '#1c1c1c'
+            contrastText: '#efefef'
         },
         secondary: {
             main: '#8c2b32',
@@ -394,6 +394,87 @@ export const androidTheme = createTheme({
                 root: {
                     borderRadius: '4px', // Rounded corners for paper
                     boxShadow: '0 1px 3px rgba(0,0,0,0.1)', // Subtle shadow
+                },
+            },
+        },
+    },
+});
+
+export const serverlessTheme = createTheme({
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#FF5E5B', // Rojo brillante, estilo acento
+        },
+        secondary: {
+            main: '#FF5E5B', // Cian vibrante para contrastes
+        },
+        warning: {
+            main: '#FF5E5B'
+        },
+        background: {
+            // default: '#1F1F1F', // Fondo oscuro
+            // paper: '#2B2B2B',   // Fondo ligeramente más claro para elementos
+        },
+        text: {
+            primary: '#FFFFFF', // Texto claro
+            secondary: '#A0A0A0', // Texto en gris para menor importancia
+            disabled: '#111'
+        },
+        divider: '#3A3A3A', // Divisor para separar secciones
+    },
+    typography: {
+        fontFamily: '"Roboto", sans-serif',
+        h1: {
+            fontSize: '2rem',
+            fontWeight: 700,
+            color: '#FF5E5B',
+        },
+        h2: {
+            fontSize: '1.8rem',
+            fontWeight: 600,
+            color: '#FF5E5B',
+        },
+        h3: {
+            fontSize: '1.6rem',
+            fontWeight: 500,
+            color: '#FFFFFF',
+        },
+        body1: {
+            fontSize: '1rem',
+            color: '#A0A0A0',
+        },
+        button: {
+            textTransform: 'none', // Mantener el texto de botones sin transformar a mayúsculas
+        },
+        allVariants: {
+            color: '#A0A0A0'
+        }
+    },
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '8px',
+                    color: '#FFFFFF',
+                    backgroundColor: '#FF5E5B',
+                    '&:hover': {
+                        backgroundColor: '#FF3D3B',
+                    },
+                },
+            },
+        },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#2B2B2B',
+                },
+            },
+        },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#1F1F1F',
                 },
             },
         },

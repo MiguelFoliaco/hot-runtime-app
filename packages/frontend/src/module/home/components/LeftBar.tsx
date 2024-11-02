@@ -112,12 +112,12 @@ const options: Record<string, menuItem[]> = {
         }
     ],
     services: [
-        {
-            path: '/notify',
-            title: 'Notificaciones',
-            typeIcon: 'icon',
-            Icon: NotificationAddOutlined
-        },
+        // {
+        //     path: '/notify',
+        //     title: 'Notificaciones',
+        //     typeIcon: 'icon',
+        //     Icon: NotificationAddOutlined
+        // },
         {
             path: '/cli',
             title: 'CLI',

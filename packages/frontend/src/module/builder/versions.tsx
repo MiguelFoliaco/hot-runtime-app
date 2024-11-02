@@ -1,4 +1,4 @@
-import { Alert, CircularProgress, Grid, IconButton, Snackbar } from "@mui/material"
+import { Alert, CircularProgress, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { useProject } from "../../utils/hooks/useProjects"
@@ -47,7 +47,7 @@ const getVersions = async (setData: (data: Tables<'version-code'>[]) => void, pr
 
 export const Versions = () => {
 
-    const { projectSelected, setProject } = useProject(state => state);
+    const { projectSelected, setProject, projects } = useProject(state => state);
     const { setVersionProduction, oss, setOSs } = useVersion()
     const [loading, setLoading] = useState(false);
     const [showError, setShowError] = useState({ msg: '', show: false })
@@ -83,27 +83,51 @@ export const Versions = () => {
         <LayoutBuilder
             listItemsLeft={LeftBar}
         >
-            {
-                loading ?
-                    <CircularProgress sx={{ m: 'auto', top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' }} />
-                    :
-                    <Grid container height='100%'>
-                        <Grid item xs={12}>
-                            {
-                                projectSelected &&
-                                <VersionsStudio />
+            <Grid item xs={12}>
+                <FormControl sx={{ width: 300, my: 2 }}>
+                    <InputLabel size="small" id="demo-simple-select-label">Proyecto</InputLabel>
+                    <Select
+                        size="small"
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={projectSelected?.id}
+                        label="Proyecto"
+                        onChange={(event) => {
+                            const p = projects.find(e => event.target.value == e.id)
+                            if (p) {
+                                setProject(p)
                             }
+                        }}
+                    >
+                        {
+                            projects.map(e => (
+                                <MenuItem value={e.id} key={`project-item-version-${e.id}`}>{e.name}</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+                {
+                    loading ?
+                        <CircularProgress sx={{ m: 'auto', top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' }} />
+                        :
+                        <Grid container height={'85%'} >
+                            <Grid item xs={12}>
+                                {
+                                    projectSelected &&
+                                    <VersionsStudio />
+                                }
+                            </Grid>
                         </Grid>
-                    </Grid>
-            }
+                }
 
-            <Snackbar open={showError.show} autoHideDuration={5000} >
-                <Alert severity="error">{showError.msg}
-                    <IconButton onClick={() => setShowError({ msg: '', show: false })} color={'error'} size='small' sx={{ ml: 1 }}>
-                        <Close fontSize='small' />
-                    </IconButton>
-                </Alert>
-            </Snackbar>
+                <Snackbar open={showError.show} autoHideDuration={5000} >
+                    <Alert severity="error">{showError.msg}
+                        <IconButton onClick={() => setShowError({ msg: '', show: false })} color={'error'} size='small' sx={{ ml: 1 }}>
+                            <Close fontSize='small' />
+                        </IconButton>
+                    </Alert>
+                </Snackbar>
+            </Grid>
         </LayoutBuilder>
     )
 }
