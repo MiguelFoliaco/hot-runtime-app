@@ -75,6 +75,12 @@ export const CLI = () => {
                 timeExpire: time ?? undefined,
                 title,
             }, session.access_token).then(e => {
+                if (!e) {
+                    return openAlert({
+                        msg: `[Error] al generar el token por favor intentelo nuevamente${e}`,
+                        severity: 'error'
+                    })
+                }
                 if (e.token) {
                     setTokenGenerate(e.token)
                     openAlert({
@@ -85,11 +91,6 @@ export const CLI = () => {
                     setShowForm(false)
                     setRolSelected(undefined)
                     setTitle('')
-                } else {
-                    openAlert({
-                        msg: `[Error] ${e.message}`,
-                        severity: 'error'
-                    })
                 }
             })
 
@@ -205,7 +206,7 @@ export const CLI = () => {
 }
 
 
-const generateToken = async (payload: { user: User, rol: Tables<'rols'>, timeExpire: number | string | undefined, title: string }, token: string): Promise<{ token: string } & PostgrestError> => {
+const generateToken = async (payload: { user: User, rol: Tables<'rols'>, timeExpire: number | string | undefined, title: string }, token: string): Promise<({ token: string } & PostgrestError | null)> => {
     api.method = 'post'
     api.bodyInit = payload
     const response = await api.rest<{ token: string } & PostgrestError>('/generateToken', {

@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { NoTransferRounded } from "@mui/icons-material";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 import { Session } from "@supabase/supabase-js";

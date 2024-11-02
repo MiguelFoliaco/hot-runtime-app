@@ -6,6 +6,8 @@ import { Server } from 'socket.io'
 import { createServer } from 'http'
 import session from 'express-session'
 import { env } from '../utils'
+import { resolve } from 'path'
+import { existsSync } from 'fs'
 
 
 export class WWW {
@@ -30,19 +32,23 @@ export class WWW {
                 httpOnly: true,
             }
         }))
+        const pathPublic = resolve(__dirname, '../../../frontend/dist')
         this.app.use(cors({ origin: '*' }))
         this.app.use(express.json())
         this.app.use(express.urlencoded({ extended: true }))
+        this.app.use(express.static(pathPublic))
         this.routes()
         this.events()
     }
 
     private routes() {
-        this.app.all('/*', (req, res, next) => {
-            console.log(req.originalUrl)
-            next()
-        })
         this.app.use('/api', routes)
+        this.app.get('/*', (req, res, next) => {
+            console.log('req')
+            const path = resolve(__dirname, '../../../frontend/dist/index.html')
+            console.log(existsSync(path))
+            return res.sendFile(path)
+        })
     }
 
 

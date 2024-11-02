@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material"
+import { Grid, Typography } from "@mui/material"
 import { LayoutBuilder } from "../../layouts/builders"
 import { LeftBar } from "../home/components/LeftBar"
 import { Outlet } from "react-router-dom"

@@ -24,7 +24,7 @@ export const Form = ({ setInfoCompilation }: props) => {
 
     useEffect(() => {
         if (!componentSelected) {
-            setLoadingProps(false);            
+            setLoadingProps(false);
             return
         };
         setLoadingProps(true)
@@ -39,7 +39,6 @@ export const Form = ({ setInfoCompilation }: props) => {
             })
         })
             .finally(() => {
-                console.log('Hola')
                 setLoadingProps(false)
             })
         const str = componentSelected.codeJSX;
@@ -86,7 +85,8 @@ export const Form = ({ setInfoCompilation }: props) => {
     }, [componentSelected])
 
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        if (!componentSelected || !content) return;
+        e.preventDefault()
+        if (!componentSelected) return;
         if (!formSchema) return;
         const data = form(e, formSchema)
         console.log(data)
@@ -97,19 +97,35 @@ export const Form = ({ setInfoCompilation }: props) => {
             }
             return;
         }
-        const update = await supabaseClient.from('content').update({
-            data
-        }).eq("id", content.id);
+        if (content) {
+            const update = await supabaseClient.from('content').update({
+                data
+            }).eq("id", content.id);
 
-        if (update.error === null) {
-            openAlert({
-                msg: "Componente actualizado con exito",
-                severity: 'success'
-            })
+            if (update.error === null) {
+                openAlert({
+                    msg: "Componente actualizado con exito",
+                    severity: 'success'
+                })
+            }
         }
+        else {
+            const update = await supabaseClient.from('content').insert({
+                componentId: componentSelected.id,
+                title: '',
+                data,
+                date_plublish: new Date().toISOString(),
+            })
+            if (update.error === null) {
+                openAlert({
+                    msg: "Componente actualizado con exito",
+                    severity: 'success'
+                })
+            }
+        }
+
     }
 
-    console.log(loadingProps)
     return (
         <Grid sx={{ width: '100%', height: '350px', bgcolor: 'background.paper', borderRadius: 2, p: 2, border: t => `1px solid ${t.palette.text.secondary}30` }}>
             {
@@ -148,7 +164,7 @@ const getProps = async (id: number, date: string = new Date().toISOString()) => 
 
     const key = `props#${id}`;
     const prevSave = localStorage.getItem(key)
-    console.log("pre save",prevSave)
+    console.log("pre save", prevSave)
     if (prevSave) {
         const contentPrev = JSON.parse(prevSave) as Tables<'content'> & { cache_control: number };
         if (contentPrev.cache_control > new Date().getTime() + (60 * 60 * 10 * 1000)) {
@@ -162,6 +178,7 @@ const getProps = async (id: number, date: string = new Date().toISOString()) => 
     }
     const item = await getData();
     if (item.data) {
+        localStorage.setItem(key, JSON.stringify({ ...item.data[0], cache_control: new Date().getTime() + (60 * 60 * 10 * 1000) }))
         return item?.data[0];
     }
     return null;
