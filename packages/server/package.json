@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
+    "npm run build": "tsc -b",
     "gn-types": "npx supabase gen types --lang=typescript --project-id \"zsfrrxykerwymjkaiasp\" --schema public > src/database.types.ts"
   },
   "keywords": [],
