@@ -3,27 +3,25 @@ import cors from 'cors'
 import ngrok from '@ngrok/ngrok'
 import { routes } from '../module'
 import { Server } from 'socket.io'
-import { createServer } from 'http'
+import { createServer, IncomingMessage, ServerResponse } from 'http'
 import session from 'express-session'
 import { env } from '../utils'
 import { resolve } from 'path'
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 
 export class WWW {
 
     private readonly app = express()
-    private readonly httpServer = createServer(this.app)
-    private readonly io = new Server(this.httpServer, {
-        cors: {
-            origin: '*'
-        }
-    })
+    private httpServer?: Server<typeof IncomingMessage, typeof ServerResponse>
+    private io?: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+
     constructor() {
         if (this.app.get('env') === 'production') {
             this.app.set('trust proxy', 1)
         }
         this.app.use(session({
-            secret: env('SESSION_KEY') || 'secret.key',
+            secret: env('SESSION_KEY') ?? 'secret.key',
             resave: false,
             saveUninitialized: true,
             cookie: {
@@ -42,14 +40,6 @@ export class WWW {
 
     private routes() {
         this.app.use('/api', routes)
-
-        this.app.all('/*', (req, res, next) => {
-            console.log("IP  -->", req.ip)
-            console.log("IP  -->", req.ips)
-            console.log("IP  -->", req.url)
-            console.log("IP  -->", req.subdomains)
-        })
-
         this.app.get('/', (req, res) => {
             return res.redirect('/admin')
         })
@@ -61,18 +51,24 @@ export class WWW {
 
 
     private events() {
+        //@ts-ignore
+        this.httpServer = createServer(this.app)
+        //@ts-ignore
+        this.io = new Server(this.httpServer)
         this.io.on('connection', (socket) => {
             this.app.set('IO', socket)
             console.log('Socket connect', socket.id)
         })
     }
-    listen(port?: string | number, enablengrok?: boolean) {
-        this.app.listen(port, () => {
+    listen(port?: number, enablengrok?: boolean) {
+        if (this.httpServer) {
+            this.httpServer.listen(port ?? 3000,)
             console.log('Server in port %s', port)
-        })
-        this.httpServer.listen(3001, () => {
-            console.log('Server Socket in port %s', 3001)
-        })
+        }
+        // if(this.httpServer){}
+        // this.httpServer.listen(3001, () => {
+        //     console.log('Server Socket in port %s', 3001)
+        // })
 
         if (enablengrok) {
             ngrok.connect({ addr: 3000, authtoken_from_env: true, domain: 'oarfish-great-flea.ngrok-free.app', port: 80 })
