@@ -40,10 +40,7 @@ export class WWW {
 
     private routes() {
         this.app.use('/api', routes)
-        this.app.get('/*', (req, res) => {
-            return res.redirect('/admin')
-        })
-        this.app.get('/admin/*', (req, res, next) => {
+        this.app.get('/*', (req, res, next) => {
             const path = resolve(__dirname, '../../../frontend/dist/index.html')
             return res.sendFile(path)
         })
