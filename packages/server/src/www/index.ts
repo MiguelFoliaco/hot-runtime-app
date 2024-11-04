@@ -7,14 +7,13 @@ import { createServer } from 'http'
 import session from 'express-session'
 import { env } from '../utils'
 import { resolve } from 'path'
-import { existsSync } from 'fs'
 
 
 export class WWW {
 
-    private app = express()
-    private httpServer = createServer(this.app)
-    private io = new Server(this.httpServer, {
+    private readonly app = express()
+    private readonly httpServer = createServer(this.app)
+    private readonly io = new Server(this.httpServer, {
         cors: {
             origin: '*'
         }
@@ -43,6 +42,14 @@ export class WWW {
 
     private routes() {
         this.app.use('/api', routes)
+
+        this.app.all('/*', (req, res, next) => {
+            console.log("IP  -->", req.ip)
+            console.log("IP  -->", req.ips)
+            console.log("IP  -->", req.url)
+            console.log("IP  -->", req.subdomains)
+        })
+
         this.app.get('/', (req, res) => {
             return res.redirect('/admin')
         })
