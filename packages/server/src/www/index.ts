@@ -37,8 +37,8 @@ export class WWW {
         this.app.use(express.json())
         this.app.use(express.urlencoded({ extended: true }))
         this.app.use(express.static(pathPublic))
-        this.routes()
         this.events()
+        this.routes()
     }
 
     private routes() {
