@@ -43,10 +43,11 @@ export class WWW {
 
     private routes() {
         this.app.use('/api', routes)
-        this.app.get('/*', (req, res, next) => {
-            console.log('req')
+        this.app.get('/', (req, res) => {
+            return res.redirect('/admin')
+        })
+        this.app.get('/admin/*', (req, res, next) => {
             const path = resolve(__dirname, '../../../frontend/dist/index.html')
-            console.log(existsSync(path))
             return res.sendFile(path)
         })
     }
