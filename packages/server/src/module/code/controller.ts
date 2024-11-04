@@ -28,13 +28,21 @@ export class CodeController {
             const compile = await this.server.compile(jsx)
             const io = req.app.get('IO') as Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
             console.log('send socket')
-            io.emit('send-code-dev', compile)
+            if (io) {
+                io.emit('send-code-dev', compile)
+            } else {
+                console.log('El socket no se ha configurado')
+            }
             return res.json(compile)
         }
         else if (req.body.js) {
             const js = req.body.js as string;
             const io = req.app.get('IO') as Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
-            io.emit('send-code-dev', { code: js, warnings: [] })
+            if (io) {
+                io.emit('send-code-dev', { code: js, warnings: [] })
+            } else {
+                console.log('El socket no se ha configurado')
+            }
             return res.json({ code: js, warnings: [] })
         }
         else {

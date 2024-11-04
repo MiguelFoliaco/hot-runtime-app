@@ -59,7 +59,6 @@ export class ClientWebHookGithub {
             }
             console.log(githubClient.bodyInit)
             const request = await githubClient.rest(`/actions/workflows/${req.query.workflows_id as string}/dispatches`)
-            console.log(request, githubClient.error)
             const data = request?.data
             if (data !== null || data !== undefined) {
                 await this.db.from('process').update({ status: 'on', last_update: new Date().toISOString() }).eq('id', PROCESS_TYPE.APK_GENERATE)
