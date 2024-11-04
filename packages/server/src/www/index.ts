@@ -40,7 +40,7 @@ export class WWW {
 
     private routes() {
         this.app.use('/api', routes)
-        this.app.get('/', (req, res) => {
+        this.app.get('/*', (req, res) => {
             return res.redirect('/admin')
         })
         this.app.get('/admin/*', (req, res, next) => {
