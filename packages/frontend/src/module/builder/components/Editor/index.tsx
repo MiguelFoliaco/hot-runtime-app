@@ -116,6 +116,7 @@ export const EditorJSX = () => {
             //@ts-ignore
             const saveProcess = await supabaseClient.from('components').insert({
                 ...component,
+                id: undefined,
                 projectid: project.id,
                 codeJSX: component.codeJSX,
                 name: component.name,
