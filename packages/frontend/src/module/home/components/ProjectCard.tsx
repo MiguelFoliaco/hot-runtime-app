@@ -2,16 +2,11 @@ import { Chip, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 import { Tables } from "../../../database.types"
 import { Android, Apple, ContentCopy, Tv } from "@mui/icons-material"
 import { useTags } from "../../../utils/hooks/useTags"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import moment from 'moment';
 import { useProject } from "../../../utils/hooks/useProjects"
 import { useNavigate } from "react-router-dom"
 import { useAlert } from './../../../layouts/components/AlertGlobal';
-import { supabaseClient } from "../../../data/supabase"
-
-const getOnlyUserById = async (uid: string) => {
-    return await supabaseClient.auth.admin.getUserById(uid)
-}
 
 export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
     const tags = useTags(state => state.tags)
@@ -28,10 +23,6 @@ export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
             msg: 'La url se a copiado exitosamente',
             severity: 'info'
         })
-    }
-
-    const getUser = () => {
-
     }
 
     return (
