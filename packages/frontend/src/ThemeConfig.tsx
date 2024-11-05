@@ -14,7 +14,7 @@ export const ThemeConfig = () => {
         }
     }, [])
     return (
-        <ThemeProvider theme={themeList[themeSelected]}>
+        <ThemeProvider theme={{...themeList[themeSelected]}}>
             <Grid sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
                 <App />
             </Grid>

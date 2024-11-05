@@ -30,6 +30,7 @@ export const themePrimary = createTheme({
             defaultProps: {
                 variant: 'outlined',
                 style: {
+                    backdropFilter: 'blur(3px)'
                     // backgroundColor: '#d941ff21',
                     // border: '2px solid #d941ff'
                 },
@@ -70,6 +71,7 @@ export const themeSecondary = createTheme({
             defaultProps: {
                 variant: 'outlined',
                 style: {
+                     backdropFilter: 'blur(3px)'
                     // backgroundColor: '#d941ff21',
                     // border: '2px solid #d941ff'
                 },
@@ -111,6 +113,7 @@ export const threeecondary = createTheme({
             defaultProps: {
                 variant: 'outlined',
                 style: {
+                     backdropFilter: 'blur(3px)'
                     // backgroundColor: '#d941ff21',
                     // border: '2px solid #d941ff'
                 },
@@ -152,6 +155,7 @@ export const begona = createTheme({
             defaultProps: {
                 variant: 'outlined',
                 style: {
+                     backdropFilter: 'blur(3px)'
                     // backgroundColor: '#d941ff21',
                     // border: '2px solid #d941ff'
                 },
@@ -194,6 +198,7 @@ export const Otono = createTheme({
             defaultProps: {
                 variant: 'outlined',
                 style: {
+                     backdropFilter: 'blur(3px)'
                     // backgroundColor: '#d941ff21',
                     // border: '2px solid #d941ff'
                 },

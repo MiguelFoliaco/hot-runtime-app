@@ -26,7 +26,7 @@ import { getOS } from "../home/services/version"
 export const APKs = () => {
 
     const [isLoading, setIsLoading] = useState(false)
-    const [statusProcessApk, setStatusProcessApk] = useState<Partial<Tables<'process'>>>({ status: 'on' })
+    const [statusProcessApk, setStatusProcessApk] = useState<Partial<Tables<'process'>>>({ status: 'off' })
     const { projects, setProjects, setProject, projectSelected } = useProject()
     const { oss, setOSs } = useVersion()
     const { builds, fillBuilds } = useAPKs()
@@ -59,6 +59,15 @@ export const APKs = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (statusProcessApk?.status === 'on') {
+            setOpenConsole(true)
+        }
+        else {
+            setOpenConsole(false)
+        }
+    }, [statusProcessApk])
+
     const generateAPK = async (osId: number) => {
         setAnchorEl(null);
         const check = confirm("¿Desea generar una version de desarrollo?");
@@ -75,7 +84,6 @@ export const APKs = () => {
                 authorization: `Bearer ${session?.access_token}`
             }
         })
-        console.log("Data ", data)
         if (data?.error) {
             openAlert({
                 msg: data.msg || "Ocurrio un error",
@@ -319,9 +327,12 @@ export const APKs = () => {
                 }
 
                 {
-                    openConsole &&
                     <Grid sx={{ position: 'absolute', bottom: 10, width: '50%' }}>
-                        <Console sx={{ height: '200px', overflowY: 'scroll' }}>
+                        <Console
+                            open={openConsole}
+                            onOpen={() => setOpenConsole(true)}
+                            onClose={() => setOpenConsole(false)}
+                            sx={{ width: '100%', height: '200px', overflowY: 'scroll' }}>
                             {
                                 payloads.map((e, i) => (
                                     <div key={`log-key-${i}`}>

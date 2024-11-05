@@ -2,14 +2,20 @@ import { Chip, Grid, IconButton, Tooltip, Typography } from "@mui/material"
 import { Tables } from "../../../database.types"
 import { Android, Apple, ContentCopy, Tv } from "@mui/icons-material"
 import { useTags } from "../../../utils/hooks/useTags"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import moment from 'moment';
 import { useProject } from "../../../utils/hooks/useProjects"
 import { useNavigate } from "react-router-dom"
 import { useAlert } from './../../../layouts/components/AlertGlobal';
+import { supabaseClient } from "../../../data/supabase"
+
+const getOnlyUserById = async (uid: string) => {
+    return await supabaseClient.auth.admin.getUserById(uid)
+}
 
 export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
     const tags = useTags(state => state.tags)
+
     const setProject = useProject(state => state.setProject)
     const { openAlert } = useAlert()
     const tag = useMemo(() => tags.find(e => e.id === project.targets_id), [tags, project])
@@ -23,6 +29,11 @@ export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
             severity: 'info'
         })
     }
+
+    const getUser = () => {
+
+    }
+
     return (
         <Grid container
             sx={{
@@ -76,3 +87,4 @@ export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
         </Grid >
     )
 }
+

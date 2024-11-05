@@ -24,7 +24,7 @@ export const ProjectList = () => {
         }, 500)
     }
     return (
-        <Grid sx={{ height: '100%', gap: 2, display: 'flex', alignItems: 'flex-start', flexDirection: 'column', justifyContent: 'center' }}>
+        <Grid sx={{ gap: 2, display: 'flex', alignItems: 'flex-start', flexDirection: 'column', justifyContent: 'center', height: '80vh' }}>
             <Grid sx={{ height: 'min-content', p: 0.5, px: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }} >
                 <Typography variant="overline">
                     Proyectos
@@ -36,7 +36,17 @@ export const ProjectList = () => {
                     <Cached className={isLoading ? "rotation" : undefined} />
                 </IconButton>
             </Grid>
-            <Grid display='grid' className="scroll" item xs={12} gap={1} sx={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px,400px))', maxHeight: '70vh !important', width: '90vw', margin: 'auto', }}>
+            <Grid
+                display='grid'
+                className="scroll"
+                xs={12}
+                gap={1}
+                sx={{
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px,400px))',
+                    width: '90vw',
+                    margin: 'auto',
+                    overflowY: 'scroll',
+                }}>
                 {
                     projects.map(e => (
                         <Grid key={e.id}>

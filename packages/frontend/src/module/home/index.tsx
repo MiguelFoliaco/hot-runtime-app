@@ -43,7 +43,7 @@ export const Home = () => {
             listItemsLeft={LeftBar}
         >
             <Grid>
-                <Grid maxHeight={'min-content'} sx={{ mb: 4 }}>
+                <Grid maxHeight={'min-content'} sx={{ mb: 4, }}>
                     <Typography>Hola {user?.user_metadata?.name || user?.email}</Typography>
                 </Grid>
                 <Grid container>

@@ -56,6 +56,7 @@ const getComponent = async (setComponents: (data: Tables<'components'>[]) => voi
 
 export const StudioWithOutMemo = () => {
     const project = useProject(state => state.projectSelected!)
+    const [openConsole, setOpenConsole] = useState(false)
     const showAlert = useAlert(state => state.openAlert)
     const user = useUser(state => state.values.user!)
     const session = useUser(state => state.values.session!)
@@ -63,7 +64,7 @@ export const StudioWithOutMemo = () => {
     const [osSelected, setOsSelected] = useState(0)
     const { components, setComponents, setComponent, componentSelected } = useComponents(state => state)
     const [loadingComponent, setLoadingComponent] = useState(false)
-    const [editor, setEditor] = useState(false)
+    const [editor, setEditor] = useState(true)
     const [loadgenerateCode, setLoadgenerateCode] = useState(false)
     const [openModalVersion, setOpenModalVersion] = useState(false)
     const [infoCompilation, setInfoCompilation] = useState('')
@@ -326,8 +327,8 @@ export const StudioWithOutMemo = () => {
                             </>
                     }
                 </Grid>
-                <Grid item container xs={10}>
-                    <Grid item xs={12} sx={{ p: 1, justifyContent: 'space-between', display: 'flex', }}>
+                <Grid item xs={10}>
+                    <Grid item xs={12} sx={{ height: 'min-content', p: 1, justifyContent: 'space-between', display: 'flex', }}>
                         <Typography variant='overline'>{project?.name}</Typography>
                         <Button onClick={() => navigate(`/workspace/versions?projectID=${project.id}`)} size='small'>{'Listado de versiones'}</Button>
                         <Button onClick={() => setOpenModalVersion(true)} size='small'>{'Generar Version'}</Button>
@@ -336,16 +337,22 @@ export const StudioWithOutMemo = () => {
                     <Grid item xs={12} sx={{ p: 1, }}>
                         {
                             editor ?
-                                <EditorJSX />
+                                <EditorJSX
+                                    openConsole={openConsole}
+                                />
                                 :
                                 <Form setInfoCompilation={setInfoCompilation} />
                         }
                     </Grid>
-                    <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2, width: '50vw' }}>
-                        <Console text={infoCompilation} sx={{ width: '55vw', height: '150px' }} />
+                    <Grid item xs={12} sx={{ p: 1, display: 'flex', gap: 2, width: editor ? '56vw' : '100%', height: 'min-content' }}>
+                        <Console
+                            open={openConsole}
+                            onClose={() => setOpenConsole(false)}
+                            onOpen={() => setOpenConsole(true)}
+                            text={infoCompilation} sx={{ width: '100%', height: '100px' }} />
                     </Grid>
                 </Grid>
-            </Grid>
+            </Grid >
         </>
     )
 }

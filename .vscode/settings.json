@@ -11,5 +11,9 @@
         "activityBar.background": "#0E323B",
         "titleBar.activeBackground": "#144552",
         "titleBar.activeForeground": "#F5FBFD"
-    }
+    },
+    "cSpell.language": "en,es",
+    "cSpell.words": [
+        "supabase"
+    ]
 }

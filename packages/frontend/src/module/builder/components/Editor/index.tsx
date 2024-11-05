@@ -17,7 +17,7 @@ import ReactAce from "react-ace/lib/ace";
 import { Ace } from "ace-builds";
 import { ContextMenu } from "./ContextMenu";
 import { getTypeComponentByText } from "../../utils/getTypeComponentByText";
-import { initial } from "./codeInitial";
+
 
 const types: Tables<'components'>['type'][] = ['component', 'function', 'hooks']
 
@@ -26,7 +26,7 @@ const initialComponent: Tables<'components'> = {
     description: '',
     // props: '{}',
     type: 'component',
-    codeJSX: initial,
+    codeJSX: '// Por favor seleccione un componente o creé uno nuevo',
     componentParent: null,
     componentParentLeft: null,
     componentParentRight: null,
@@ -40,7 +40,7 @@ const initialComponent: Tables<'components'> = {
     public: false,
     main_component: false
 }
-export const EditorJSX = () => {
+export const EditorJSX = ({ openConsole }: { openConsole?: boolean }) => {
     const theme = useTheme()
     const ref = useRef<ReactAce>(null)
     const project = useProject(state => state.projectSelected!)
@@ -197,8 +197,8 @@ export const EditorJSX = () => {
     return (
         <Grid
             onClick={handleEditorClick}
-            sx={{ height: '350px', pl: 2, display: 'flex', gap: 2 }}>
-            <Grid sx={{ height: '350px', width: '100%', position: 'relative', }}>
+            sx={{ height:openConsole? '350px':'75vh', transition: '200ms', pl: 2, display: 'flex', gap: 2 }}>
+            <Grid sx={{ height: openConsole ? '350px' : '75vh', transition: '200ms', width: '100%', position: 'relative', }}>
                 <AceEditor
                     ref={ref}
                     enableBasicAutocompletion
