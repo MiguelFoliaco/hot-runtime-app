@@ -44,7 +44,7 @@ export const ProjectCard = ({ project }: { project: Tables<'projects'> }) => {
                             linkTo(`/workspace?projectID=${project.id}`)
                         }}
                     >{project.name}</Typography>
-                    <div onClick={copy}>
+                    <div role="button" onClick={copy}>
                         <Tooltip title='Copiar url de conexión'>
                             <IconButton size="small">
                                 <ContentCopy fontSize="small" color='primary' />

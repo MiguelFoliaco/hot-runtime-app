@@ -4,7 +4,7 @@ import { generateTokenPayload } from "./types/generateTokenPayload";
 
 export class AuthController {
 
-    constructor(private service: AuthServices) { }
+    constructor(private readonly service: AuthServices) { }
 
     generateToken: IHandler = async (req, res) => {
         const body = req.body as generateTokenPayload

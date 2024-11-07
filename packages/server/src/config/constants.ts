@@ -11,8 +11,8 @@ const configDev: config = {
     gitHubUrl: `https://api.github.com/repos`,
     ownerRepo: 'MiguelFoliaco',
     repo: 'runtime-rn',
-    origin: 'http://192.168.1.4:3000/api',
-    originSocket: 'http://192.168.1.4:3000'
+    origin: 'http://192.168.1.6:3000/api',
+    originSocket: 'http://192.168.1.6:3000'
 }
 
 const configProd: config = {

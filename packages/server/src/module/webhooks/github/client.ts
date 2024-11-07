@@ -9,7 +9,7 @@ import { PayloadBuild } from "./interfaces/payloadBuilds";
 import { config } from "../../../config/constants";
 
 export class ClientWebHookGithub {
-    constructor(private db: SupabaseClient<Database, 'public'>) { }
+    constructor(private readonly db: SupabaseClient<Database, 'public'>) { }
 
     getStatusWorkflows: IHandler = async (req, res) => {
         try {

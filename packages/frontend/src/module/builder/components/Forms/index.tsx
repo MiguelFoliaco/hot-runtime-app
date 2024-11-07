@@ -20,7 +20,7 @@ export const Form = ({ setInfoCompilation }: props) => {
     const [formSchema, setFormSchema] = useState<InterfaceSchema>()
     const [loadingProps, setLoadingProps] = useState(true)
     const [content, setContent] = useState<Tables<'content'>>()
-    const form = useForm<Json>();
+    const form = useForm<Json & { title: string }>();
 
     useEffect(() => {
         if (!componentSelected) {
@@ -97,7 +97,8 @@ export const Form = ({ setInfoCompilation }: props) => {
             }
             return;
         }
-        if (content) {
+        console.log("Content", content)
+        if (content?.id) {
             const update = await supabaseClient.from('content').update({
                 data
             }).eq("id", content.id);
@@ -112,7 +113,7 @@ export const Form = ({ setInfoCompilation }: props) => {
         else {
             const update = await supabaseClient.from('content').insert({
                 componentId: componentSelected.id,
-                title: '',
+                title: data?.title || '',
                 data,
                 date_plublish: new Date().toISOString(),
             })
@@ -121,6 +122,7 @@ export const Form = ({ setInfoCompilation }: props) => {
                     msg: "Componente actualizado con exito",
                     severity: 'success'
                 })
+                localStorage.removeItem(`props#${componentSelected.id}`)
             }
         }
 
@@ -137,7 +139,19 @@ export const Form = ({ setInfoCompilation }: props) => {
                                 <F
                                     className="form scroll"
                                     onSubmit={onSubmit}
-                                    schema={formSchema}
+                                    schema={{
+                                        ...formSchema,
+                                        properties: {
+                                            ...formSchema.properties,
+                                            title: {
+                                                type: 'string',
+                                                title: 'Titulo de este componente',
+                                                config: {
+                                                    textHelp: 'Este será el identificador para apuntar el contenido'
+                                                }
+                                            }
+                                        }
+                                    }}
                                     theme={{ ...theme, components: { MuiTextField: { defaultProps: { size: 'small' } } } }}
                                     defaultValue={content?.data}
                                 >
@@ -177,7 +191,7 @@ const getProps = async (id: number, date: string = new Date().toISOString()) => 
         return contentPrev;
     }
     const item = await getData();
-    if (item.data) {
+    if (item.data && item.data[0]) {
         localStorage.setItem(key, JSON.stringify({ ...item.data[0], cache_control: new Date().getTime() + (60 * 60 * 10 * 1000) }))
         return item?.data[0];
     }
