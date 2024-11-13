@@ -10,5 +10,6 @@ const controller = new AuthController(service)
 
 routeAuth.post('/generateToken', verifySession, controller.generateToken)
 routeAuth.post('/login', controller.login)
+routeAuth.get('/get-user', controller.getUsers)
 
 export { routeAuth }

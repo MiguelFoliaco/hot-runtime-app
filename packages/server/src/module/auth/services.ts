@@ -4,7 +4,7 @@ import { sign } from 'jsonwebtoken'
 import { Database } from "../../database.types";
 import { env } from "../../utils";
 export class AuthServices {
-    constructor(private client: SupabaseClient<Database, 'public'>) { }
+    constructor(private readonly client: SupabaseClient<Database, 'public'>) { }
 
     generateToken = async (payload: generateTokenPayload) => {
         const actions = await this.client.from('actions').select().in("id", payload.rol.actions)
@@ -13,7 +13,7 @@ export class AuthServices {
         }
 
         const token_save = await this.client.from('tokens_dev').insert({
-            assing_by: payload.user.email || '',
+            assing_by: payload.user.email ?? '',
             show: false,
             title: payload.title,
             create_by: payload.user.id
@@ -26,8 +26,8 @@ export class AuthServices {
                 actions: actions.data.map(e => e.code),
                 userId: payload.user.id,
                 username: payload.user.email,
-                tokenID: token_save.data[0].id || 'non-id'
-            }, env('JWT_KEY_CLIENT_generate') || 'secret-mi-perro',config)
+                tokenID: token_save.data[0].id ?? 'non-id'
+            }, env('JWT_KEY_CLIENT_generate') ?? 'secret-mi-perro', config)
             return token;
         }
         return token_save.error
@@ -41,6 +41,10 @@ export class AuthServices {
         })
 
         return sign;
+    }
+
+    getUsers = async () => {
+        return this.client.auth.admin.listUsers()
     }
 
 }

@@ -82,7 +82,7 @@ export const LayoutBuilder = ({ children, listItemsLeft: ListLeft }: { children:
                     }
                 </Grid>
             </Grid>
-            <Grid container sx={{
+            <Grid sx={{
                 gridColumnStart: openMenuLeft ? 5 : 2,
                 gridColumnEnd: 26,
                 gridRowStart: 2,

@@ -8,7 +8,7 @@ import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 export class CodeController {
-    constructor(private server: CodeServices) { }
+    constructor(private readonly server: CodeServices) { }
 
     generateVersion: IHandler = async (req, res) => {
         const versionCode = req.body as Tables<'version-code'>
@@ -20,7 +20,7 @@ export class CodeController {
 
         //@ts-ignore
         const payloadToken = req.session.tokenPayload as payloadTokenDev
-        if (!payloadToken.actions.includes('dev-cli-push')) {
+        if (!payloadToken.actions.find(e => e.trim().toLowerCase() === 'dev-cli-push')) {
             return res.status(403).json({ msg: 'No tienes permiso para esta operación' })
         }
         if (req.body.jsx) {
