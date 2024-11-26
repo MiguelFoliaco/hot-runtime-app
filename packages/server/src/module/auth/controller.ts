@@ -17,12 +17,4 @@ export class AuthController {
     login: IHandler = async (req, res) => {
         return res.json(await this.service.login(req.body))
     }
-
-    @Get("GET /get-user")
-    async getUsers(req: Request, res: Response) {
-        console.log(AuthController.bind(this))
-        //@ts-ignore
-        this = AuthController
-        return res.json({})
-    }
 }

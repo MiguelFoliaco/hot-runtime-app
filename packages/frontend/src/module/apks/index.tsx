@@ -184,7 +184,7 @@ export const APKs = () => {
         <LayoutBuilder
             listItemsLeft={LeftBar}
         >
-            <Grid container sx={{ position: 'relative' }}>
+            <Grid container sx={{ position: 'relative', minHeight: '90vh' }}>
                 <Menu
                     id="basic-menu"
                     anchorEl={anchorEl}
@@ -296,8 +296,8 @@ export const APKs = () => {
                                                 }
                                             </Grid>
                                             <Grid item xs={1}>
-                                                <div onClick={() => selectedItem(e)}>
-                                                    <Tooltip title='Mostar detalles'>
+                                                <div role='button' onClick={() => selectedItem(e)}>
+                                                    <Tooltip title='Mostrar detalles'>
                                                         <IconButton >
                                                             <RemoveRedEye color={e?.id === build?.id ? 'error' : 'info'} />
                                                         </IconButton>
@@ -327,6 +327,7 @@ export const APKs = () => {
                 }
 
                 {
+                    projectSelected &&
                     <Grid sx={{ position: 'absolute', bottom: 10, width: '50%' }}>
                         <Console
                             open={openConsole}
@@ -335,7 +336,7 @@ export const APKs = () => {
                             sx={{ width: '100%', height: '200px', overflowY: 'scroll' }}>
                             {
                                 payloads.map((e, i) => (
-                                    <div key={`log-key-${i}`}>
+                                    <div key={`log-key-${i}-${e?.workflow_job?.id}`}>
                                         {e?.workflow_job?.run_id || e?.workflow_run?.id && <Typography variant="overline">Run id [<Typography variant='overline' color='secondary'>{e?.workflow_job?.run_id || e?.workflow_run?.id}</Typography>]</Typography>}
                                         <br />
                                         {e?.workflow_job?.name && <Typography variant="overline">Workflow Name [<Typography variant='overline' color='secondary'>{e?.workflow_job?.name}</Typography>]</Typography>}
